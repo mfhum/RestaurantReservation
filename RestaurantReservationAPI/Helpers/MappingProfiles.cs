@@ -38,6 +38,7 @@ public class MappingProfiles : Profile
     CreateMap<Table, ResponseUpdateTableDto>().ReverseMap();
     CreateMap<Table, ResponseDeleteTableDto>().ReverseMap();
     CreateMap<Table, ResponseGetTableDto>().ReverseMap();
-    CreateMap<Table, ResponseGetTablesDto>().ReverseMap();
+    CreateMap<List<Table>, ResponseGetTablesDto>()
+      .ForMember(dest => dest.Tables, opt => opt.MapFrom(src => src)); // Map List<Table> to List<ResponseTableDto>
   }
 }

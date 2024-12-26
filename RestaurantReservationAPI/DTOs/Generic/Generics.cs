@@ -1,6 +1,6 @@
-namespace RestaurantReservationAPI.Models;
+namespace RestaurantReservationAPI.DTOs.Generic;
 
-public class GenericAdditions
+public class Generics
 {
   public interface IHasId
   {

@@ -1,3 +1,6 @@
+using RestaurantReservationAPI.DTOs.Generic;
+using RestaurantReservationAPI.Models;
+
 namespace RestaurantReservationAPI.DTOs.Tables;
 
 public class RequestTableDto
@@ -13,9 +16,9 @@ public class RequestUpdateTableDto : RequestTableDto
   public required Guid TableId { get; set; }
 }
 
-public class RequestDeleteTableDto
+public class RequestDeleteTableDto : Generics.IHasId
 {
-  public required Guid TableId { get; set; }
+  public Guid Id { get; set; }
 }
 
 public class RequestGetTableDto
@@ -24,3 +27,9 @@ public class RequestGetTableDto
 }
 
 public class RequestGetTablesDto;
+
+public class RequestUpdateTableSeatsDto
+{
+  public required Guid TableId { get; set; }
+  public required int Seats { get; set; }
+}

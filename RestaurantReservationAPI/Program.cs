@@ -1,44 +1,55 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantReservationAPI.Data;
 using RestaurantReservationAPI.Helpers;
+using RestaurantReservationAPI.Interface;
+using RestaurantReservationAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
+builder.Services.AddScoped<ITableRepository, TableRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAutoMapper(typeof(MappingProfiles));
-
-var username = builder.Configuration["Database:Username"];
-var password = builder.Configuration["Database:Password"];
+// Configure database
+var username = builder.Configuration["Database:Username"] ?? "defaultuser";
+var password = builder.Configuration["Database:Password"] ?? "defaultpassword";
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
   ?.Replace("{Database:Username}", username)
   .Replace("{Database:Password}", password);
 
+if (string.IsNullOrEmpty(connectionString))
+{
+  throw new InvalidOperationException("The connection string is not configured.");
+}
+
 builder.Services.AddDbContext<DataContext>(options =>
 {
-  options.UseNpgsql(connectionString); // Pass the constructed connection string
+  options.UseNpgsql(connectionString); // PostgreSQL
 });
-
-
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Apply database migrations
+using (var scope = app.Services.CreateScope())
 {
-  app.UseSwagger();
-  app.UseSwaggerUI();
+  var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+  dbContext.Database.Migrate();
 }
 
+// Configure Swagger globally
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+  c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestaurantReservationAPI v1");
+});
+
+// Configure middleware
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

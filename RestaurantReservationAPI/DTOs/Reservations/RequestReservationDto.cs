@@ -1,3 +1,5 @@
+using RestaurantReservationAPI.DTOs.Generic;
+
 namespace RestaurantReservationAPI.DTOs.Reservations;
 
 public class RequestReservationDto
@@ -15,11 +17,10 @@ public class RequestUpdateReservationDto : RequestReservationDto
   public required Guid ReservationId { get; set; }
 }
 
-public class RequestCancelReservationDto
+public class RequestCancelReservationDto : Generics.IHasId
 {
-  public required Guid ReservationId { get; set; }
+  public Guid Id { get; set; }
 }
-
 public class RequestGetReservationDto
 {
   public required Guid ReservationId { get; set; }

@@ -2,6 +2,7 @@ namespace RestaurantReservationAPI.DTOs.Tables;
 
 public class ResponseTableDto
 {
+  public required Guid RestaurantId { get; set; }
   public required int TableNumber { get; set; }
   public required int Seats { get; set; }
 }

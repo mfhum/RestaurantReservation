@@ -1,6 +1,7 @@
 using AutoMapper;
 using RestaurantReservationAPI.Interface;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantReservationAPI.DTOs.Generic;
 using RestaurantReservationAPI.Models;
 
 namespace RestaurantReservationAPI.Controllers;
@@ -17,7 +18,7 @@ public abstract class BaseController<T, TResponseGetAllDto, TResponseGetDto, TRe
   where TResponseCreateDto : class
   where TRequestUpdateDto : class
   where TResponseUpdateDto : class
-  where TRequestDeleteDto : class, GenericAdditions.IHasId
+  where TRequestDeleteDto : class, Generics.IHasId
 {
   [HttpGet("GetAll")]
   public async Task<ActionResult<TResponseGetAllDto>> GetAll()
