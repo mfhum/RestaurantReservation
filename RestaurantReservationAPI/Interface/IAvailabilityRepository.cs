@@ -4,5 +4,5 @@ namespace RestaurantReservationAPI.Interface;
 
 public interface IAvailabilityRepository
 {
-  Task<List<Availability>> GetAvailabilityByTimeAndGuests(DateTime reservationTime, int numberOfGuests);
+  Task<ICollection<Availability>> GetAvailabilityByTimeAndGuests(DateTime reservationTime, int numberOfGuests);
 }

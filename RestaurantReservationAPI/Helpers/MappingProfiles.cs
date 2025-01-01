@@ -24,8 +24,7 @@ namespace RestaurantReservationAPI.Helpers
             CreateMap<Reservation, ResponseUpdateReservationDto>().ReverseMap();
             CreateMap<Reservation, ResponseCancelReservationDto>().ReverseMap();
             CreateMap<Reservation, ResponseGetReservationDto>().ReverseMap();
-            CreateMap<List<Reservation>, ResponseGetReservationsDto>()
-                .ForMember(dest => dest.Reservations, opt => opt.MapFrom(src => src));
+            CreateMap<Reservation, ResponseGetReservationsDto>().ReverseMap();
             CreateMap<Reservation, ResponseGetReservationsByTableDto>().ReverseMap();
             CreateMap<Reservation, ResponseGetReservationsByTimeRangeDto>().ReverseMap();
 
@@ -38,16 +37,12 @@ namespace RestaurantReservationAPI.Helpers
 
             CreateMap<Table, ResponseTableDto>().ReverseMap();
             CreateMap<Table, ResponseGetTableDto>().ReverseMap();
-            CreateMap<List<Table>, ResponseGetTablesDto>()
-                .ForMember(dest => dest.Tables, opt => opt.MapFrom(src => src));
+            CreateMap<Table, ResponseGetTablesDto>().ReverseMap();
             CreateMap<Table, ResponseCreateTableDto>().ReverseMap();
             CreateMap<Table, ResponseUpdateTableDto>().ReverseMap();
             CreateMap<Table, ResponseDeleteTableDto>().ReverseMap();
 
-            CreateMap<Availability, ResponseGetGeneralAvailabilityDto>()
-                .ForMember(dest => dest.TableCount, opt => opt.MapFrom(src => src.TableCount)) // Default to an empty list
-                .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.ReservationTime))
-                .ReverseMap();
+            CreateMap<Availability, ResponseGetGeneralAvailabilityDto>().ReverseMap();
         }
     }
 }

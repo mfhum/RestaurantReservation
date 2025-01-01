@@ -21,10 +21,10 @@ public abstract class BaseController<T, TResponseGetAllDto, TResponseGetDto, TRe
   where TRequestDeleteDto : class, Generics.IHasId
 {
   [HttpGet("GetAll")]
-  public async Task<ActionResult<TResponseGetAllDto>> GetAll()
+  public async Task<ActionResult<List<TResponseGetAllDto>>> GetAll()
   {
     var entities = await repository.GetAllAsync();
-    var entitiesDto = mapper.Map<TResponseGetAllDto>(entities);
+    var entitiesDto = mapper.Map<List<TResponseGetAllDto>>(entities);
     return Ok(entitiesDto);
   }
 

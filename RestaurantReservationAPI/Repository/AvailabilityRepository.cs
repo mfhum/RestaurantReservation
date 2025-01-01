@@ -5,29 +5,30 @@ using RestaurantReservationAPI.Models;
 
 namespace RestaurantReservationAPI.Repository;
 
-public class AvailabilityRepository : IAvailabilityRepository
+public class AvailabilityRepository(DataContext context, IReservationRepository reservationRepository)
+    : IAvailabilityRepository
 {
-    private readonly DataContext _context;
-    private readonly IReservationRepository _reservationRepository;
-
-    public AvailabilityRepository(DataContext context, IReservationRepository reservationRepository)
+    public async Task<ICollection<Availability>> GetAvailabilityByTimeAndGuests(DateTime reservationTime, int numberOfGuests)
     {
-        _context = context;
-        _reservationRepository = reservationRepository;
-    }
-
-    public async Task<List<Availability>> GetAvailabilityByTimeAndGuests(DateTime reservationTime, int numberOfGuests)
-    {
+        var roundedReservationTime = new DateTime(
+            reservationTime.Year,
+            reservationTime.Month,
+            reservationTime.Day,
+            reservationTime.Hour,
+            reservationTime.Minute % 15 == 0 ? reservationTime.Minute : (reservationTime.Minute % 15 + 1) * 15 % 60,
+            0,
+            000,
+            DateTimeKind.Utc);
         // Generate 15-minute intervals for the next 2 hours
-        var timeSlots = new List<DateTime> { reservationTime };
+        var timeSlots = new List<DateTime> { roundedReservationTime };
         for (var i = 1; i <= 8; i++)
         {
-            timeSlots.Add(reservationTime.AddMinutes(i * 15));
+            timeSlots.Add(roundedReservationTime.AddMinutes(i * 15));
         }
 
         // Fetch all tables and reservations for the relevant time range
-        var allTables = await _context.Tables.ToListAsync();
-        var reservations = await _reservationRepository.GetReservationsByTimeRange(
+        var allTables = await context.Tables.ToListAsync();
+        var reservations = await reservationRepository.GetReservationsByTimeRange(
             timeSlots.First(),
             timeSlots.Last().AddMinutes(90) // Include overlapping reservations
         );

@@ -6,7 +6,6 @@ public class ResponseReservationDto
 {
   public required Guid ReservationId { get; set; }
   public required Guid TableId { get; set; }
-  public required Table Table { get; set; } // Navigation Property
   public required DateTime ReservationDate { get; set; }
   public required int Guests { get; set; }
   public string? Notes { get; set; } = string.Empty;
@@ -24,10 +23,7 @@ public class ResponseCancelReservationDto
 public class ResponseGetReservationDto : ResponseReservationDto;
 
 
-public class ResponseGetReservationsDto
-{
-  public required List<ResponseReservationDto> Reservations { get; set; }
-}
+public class ResponseGetReservationsDto : ResponseReservationDto;
 
 public class ResponseGetReservationsByTableDto
 {
