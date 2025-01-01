@@ -2,12 +2,19 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantReservationAPI.Data;
 using RestaurantReservationAPI.Helpers;
 using RestaurantReservationAPI.Interface;
+using RestaurantReservationAPI.Middleware;
 using RestaurantReservationAPI.Repository;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+  .AddJsonOptions(options =>
+  {
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+  });
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
@@ -49,6 +56,7 @@ app.UseSwaggerUI(c =>
 
 // Configure middleware
 app.UseHttpsRedirection();
+app.UseErrorHandling();
 app.UseAuthorization();
 app.MapControllers();
 
