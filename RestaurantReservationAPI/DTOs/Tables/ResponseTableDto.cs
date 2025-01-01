@@ -9,13 +9,14 @@ public class ResponseTableDto
 
 public class ResponseGetTablesDto
 {
-  public required List<ResponseTableDto> Tables { get; set; } = new List<ResponseTableDto>();
+  public required List<ResponseTableDto> Tables { get; set; }
 }
 
 public class ResponseGetTableDto : ResponseTableDto;
 
 public class ResponseCreateTableDto : ResponseTableDto;
 public class ResponseUpdateTableDto : ResponseTableDto;
+
 public class ResponseDeleteTableDto
 {
   public required Guid TableId { get; set; }

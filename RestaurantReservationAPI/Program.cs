@@ -13,11 +13,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
   .AddJsonOptions(options =>
   {
-    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
   });
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -56,7 +57,7 @@ app.UseSwaggerUI(c =>
 
 // Configure middleware
 app.UseHttpsRedirection();
-app.UseErrorHandling();
+// app.UseErrorHandling();
 app.UseAuthorization();
 app.MapControllers();
 

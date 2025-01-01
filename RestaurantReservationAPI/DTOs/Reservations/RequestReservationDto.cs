@@ -26,12 +26,6 @@ public class RequestGetReservationDto
   public required Guid ReservationId { get; set; }
 }
 
-public class RequestGetReservationsDto
-{
-  public required DateTime StartDate { get; set; }
-  public required DateTime EndDate { get; set; }
-}
-
 public class RequestGetReservationsByTableDto
 {
   public required Guid TableId { get; set; }
@@ -39,3 +33,14 @@ public class RequestGetReservationsByTableDto
   public required DateTime EndDate { get; set; }
 }
 
+public class RequestGetReservationsByTimeRangeDto
+{
+  public required DateTime StartTime { get; set; }
+  public required DateTime EndTime { get; set; }
+}
+
+public class RequestUpdateTableSeatsDto
+{
+  public required Guid TableId { get; set; }
+  public required int Seats { get; set; }
+}

@@ -26,11 +26,16 @@ public class ResponseGetReservationDto : ResponseReservationDto;
 
 public class ResponseGetReservationsDto
 {
-  public required List<ResponseReservationDto> Reservations { get; set; } = new List<ResponseReservationDto>();
+  public required List<ResponseReservationDto> Reservations { get; set; }
 }
 
 public class ResponseGetReservationsByTableDto
 {
-  public required Guid TableId { get; set; }
-  public required List<ResponseReservationDto> Reservations { get; set; } = new List<ResponseReservationDto>();
+  public required List<ResponseReservationDto> Reservations { get; set; }
 }
+
+public class ResponseGetReservationsByTimeRangeDto
+{
+  public required List<ResponseReservationDto> Reservations { get; set; }
+}
+

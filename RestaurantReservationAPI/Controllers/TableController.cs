@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantReservationAPI.DTOs.Reservations;
 using RestaurantReservationAPI.DTOs.Tables;
 using RestaurantReservationAPI.Interface;
 using RestaurantReservationAPI.Models;
@@ -15,4 +16,8 @@ public class TableController(ITableRepository tableRepository, IMapper mapper) :
     var createdEntity = await tableRepository.UpdateTableSeats(updateSeatsDto.TableId, updateSeatsDto.Seats);
     return Ok("Successfully updated table size to " + updateSeatsDto.Seats);
   }
+
+
+
+
 }

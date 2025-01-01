@@ -28,8 +28,5 @@ public class RequestGetTableDto
 
 public class RequestGetTablesDto;
 
-public class RequestUpdateTableSeatsDto
-{
-  public required Guid TableId { get; set; }
-  public required int Seats { get; set; }
-}
+
+

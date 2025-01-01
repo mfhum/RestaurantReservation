@@ -49,4 +49,13 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
     await Context.SaveChangesAsync();
     return newReservation;
   }
+
+  public async Task<List<Reservation>> GetReservationsByTimeRange(DateTime startTime, DateTime endTime)
+  {
+    return await Context.Reservations
+      .Where(r => r.ReservationDate >= startTime && r.ReservationDate <= endTime)
+      .ToListAsync();
+  }
+
+
 }
