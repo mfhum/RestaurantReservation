@@ -52,9 +52,8 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
 
   public async Task<ICollection<Reservation>> GetReservationsByTimeRange(DateTime startTime, DateTime endTime)
   {
-    List<Reservation> reservations = await Context.Reservations
-      .Where(r => r.ReservationDate >= startTime && r.ReservationDate <= endTime)
-      .ToListAsync();
+    var allReservations = await GetAllAsync();
+    var reservations = allReservations.Where(r => r.ReservationDate >= startTime && r.ReservationDate <= endTime).ToList();
     return reservations;
   }
 

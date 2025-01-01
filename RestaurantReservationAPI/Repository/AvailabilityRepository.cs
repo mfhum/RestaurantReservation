@@ -15,16 +15,18 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
             reservationTime.Month,
             reservationTime.Day,
             reservationTime.Hour,
-            reservationTime.Minute % 15 == 0 ? reservationTime.Minute : (reservationTime.Minute % 15 + 1) * 15 % 60,
+            reservationTime.Minute % 15 == 0 ? reservationTime.Minute : (reservationTime.Minute / 15 + 1) * 15 % 60,
             0,
-            000,
             DateTimeKind.Utc);
+
         // Generate 15-minute intervals for the next 2 hours
         var timeSlots = new List<DateTime> { roundedReservationTime };
         for (var i = 1; i <= 8; i++)
         {
             timeSlots.Add(roundedReservationTime.AddMinutes(i * 15));
+
         }
+
 
         // Fetch all tables and reservations for the relevant time range
         var allTables = await context.Tables.ToListAsync();

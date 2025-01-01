@@ -12,7 +12,7 @@ public class ReservationController(IReservationRepository reservationRepository,
   private readonly IMapper _mapper = mapper;
 
   [HttpGet("GetReservationsByTimeRange")]
-  public async Task<ActionResult<List<ResponseGetReservationsByTimeRangeDto>>> GetReservationsByTimeRange([FromQuery] DateTime startTime, [FromQuery] DateTime endTime)
+  public async Task<ActionResult<ICollection<Reservation>>> GetReservationsByTimeRange([FromQuery] DateTime startTime, [FromQuery] DateTime endTime)
   {
     var reservations = await reservationRepository.GetReservationsByTimeRange(startTime, endTime);
     var reservationsDto = _mapper.Map<List<ResponseGetReservationsByTimeRangeDto>>(reservations);

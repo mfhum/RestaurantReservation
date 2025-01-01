@@ -25,13 +25,5 @@ public class ResponseGetReservationDto : ResponseReservationDto;
 
 public class ResponseGetReservationsDto : ResponseReservationDto;
 
-public class ResponseGetReservationsByTableDto
-{
-  public required List<ResponseReservationDto> Reservations { get; set; }
-}
-
-public class ResponseGetReservationsByTimeRangeDto
-{
-  public required List<ResponseReservationDto> Reservations { get; set; }
-}
-
+public class ResponseGetReservationsByTableDto : ResponseReservationDto;
+public class ResponseGetReservationsByTimeRangeDto : ResponseReservationDto;
