@@ -1,10 +1,12 @@
 import './App.sass'
-import Reservations from "./components/Reservations/Reservations.tsx";
+import AllReservations from "./components/AllReservations/AllReservations.tsx";
+import AllTables from "./components/AllTables/AllTables.tsx";
 
 function App() {
   return (
     <>
-      <Reservations />
+      <AllReservations />
+      <AllTables />
     </>
   )
 }

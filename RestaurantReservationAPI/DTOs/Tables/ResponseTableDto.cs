@@ -7,10 +7,7 @@ public class ResponseTableDto
   public required int Seats { get; set; }
 }
 
-public class ResponseGetTablesDto
-{
-  public required List<ResponseTableDto> Tables { get; set; }
-}
+public class ResponseGetTablesDto : ResponseTableDto;
 
 public class ResponseGetTableDto : ResponseTableDto;
 

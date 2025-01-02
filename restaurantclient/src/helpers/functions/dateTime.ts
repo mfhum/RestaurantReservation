@@ -1,7 +1,5 @@
 export const formatDate = (date: Date) => {
-  console.log("standard date:", date);
   date = toLocalDateTime(date);
-  console.log("formatted date:", date);
 
   const year = String(date.getFullYear());
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -17,8 +15,5 @@ export const formatTime = (date: Date) => {
 };
 
 export const toLocalDateTime = (date: Date) => {
-  console.log("FUNCTION standard date:", date);
-  const localDate = new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Zurich' }));
-  console.log("FUNCTION formatted date:", localDate);
-  return localDate;
+  return new Date(date.toLocaleString('en-US', {timeZone: 'Europe/Zurich'}));
 };
