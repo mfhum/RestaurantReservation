@@ -17,7 +17,4 @@ public class TableController(ITableRepository tableRepository, IMapper mapper) :
     return Ok("Successfully updated table size to " + updateSeatsDto.Seats);
   }
 
-
-
-
 }
