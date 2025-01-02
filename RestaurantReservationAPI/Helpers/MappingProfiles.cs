@@ -18,6 +18,7 @@ namespace RestaurantReservationAPI.Helpers
             CreateMap<Reservation, RequestGetReservationsByTableDto>().ReverseMap();
             CreateMap<Reservation, RequestGetReservationsByTimeRangeDto>().ReverseMap();
             CreateMap<Reservation, RequestUpdateTableSeatsDto>().ReverseMap();
+            CreateMap<Reservation, RequestGetReservationsByIdDto>().ReverseMap();
 
             CreateMap<Reservation, ResponseReservationDto>().ReverseMap();
             CreateMap<Reservation, ResponseCreateReservationDto>().ReverseMap();
@@ -27,6 +28,7 @@ namespace RestaurantReservationAPI.Helpers
             CreateMap<Reservation, ResponseGetReservationsDto>().ReverseMap();
             CreateMap<Reservation, ResponseGetReservationsByTableDto>().ReverseMap();
             CreateMap<Reservation, ResponseGetReservationsByTimeRangeDto>().ReverseMap();
+            CreateMap<Reservation, ResponseGetReservationsByIdDto>().ReverseMap();
 
             CreateMap<Table, RequestTableDto>().ReverseMap();
             CreateMap<Table, RequestCreateTableDto>().ReverseMap();

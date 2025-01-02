@@ -29,7 +29,7 @@ public abstract class BaseController<T, TResponseGetAllDto, TResponseGetDto, TRe
   }
 
   [HttpGet("GetById")]
-  public async Task<ActionResult<TResponseGetDto>> GetById(Guid id)
+  public async Task<ActionResult<TResponseGetDto>> GetById([FromQuery] Guid id)
   {
     var entity = await repository.GetByIdAsync(id);
     if (entity == null) return NotFound();

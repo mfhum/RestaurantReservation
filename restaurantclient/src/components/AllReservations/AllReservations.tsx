@@ -15,18 +15,18 @@ function AllReservations() {
   if (AllReservationsQuery.error) return `An error has occurred: ${AllReservationsQuery.error.message}`;
 
   return (
-      <div>
-        <h2>All Reservations:</h2>
-        {AllReservationsQuery.data.map((reservation: ReservationObject) => (
-            <div className={classes.reservationInfo} key={reservation.reservationId}>
-              Amount of guests: {reservation.guests}<br/>
-              Date of reservation: {formatDate(reservation.reservationDate)}<br/>
-              Time of reservation: {formatTime(reservation.reservationDate)}<br/>
-              Notes: {reservation.notes == 'string' ? 'no notes' : reservation.notes}<br/>
-            </div>
-        ))}
-        <div>{AllReservationsQuery.isFetching ? 'Updating...' : ''}</div>
-      </div>
+    <div>
+      <h2>All Reservations:</h2>
+      {AllReservationsQuery.data.map((reservation: ReservationObject) => (
+        <div className={classes.reservationInfo} key={reservation.reservationId}>
+          Amount of guests: {reservation.guests}<br/>
+          Date of reservation: {formatDate(reservation.reservationDate)}<br/>
+          Time of reservation: {formatTime(reservation.reservationDate)}<br/>
+          Notes: {reservation.notes == 'string' ? 'no notes' : reservation.notes}<br/>
+        </div>
+      ))}
+      <div>{AllReservationsQuery.isFetching ? 'Updating...' : ''}</div>
+    </div>
   )
 }
 

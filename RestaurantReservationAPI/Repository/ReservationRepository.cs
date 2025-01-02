@@ -57,5 +57,11 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
     return reservations;
   }
 
+  public async Task<ICollection<Reservation>> GetReservationsByTableId(Guid tableId)
+  {
+    var reservations = await Context.Reservations.Where(r => r.TableId == tableId).ToListAsync();
+    return reservations;
+  }
+
 
 }

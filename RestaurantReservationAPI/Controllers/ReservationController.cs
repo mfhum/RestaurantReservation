@@ -19,6 +19,12 @@ public class ReservationController(IReservationRepository reservationRepository,
     return Ok(reservationsDto);
   }
 
-
+  [HttpGet("GetReservationsByTableId")]
+  public async Task<ActionResult<ICollection<Reservation>>> GetReservationsByTableId([FromQuery] RequestGetReservationsByTableDto requestGetReservationsByTableDto)
+  {
+    var reservations = await reservationRepository.GetReservationsByTableId(requestGetReservationsByTableDto.TableId);
+    var reservationsDto = _mapper.Map<List<ResponseGetReservationsByTableDto>>(reservations);
+    return Ok(reservationsDto);
+  }
 
 }
