@@ -1,9 +1,10 @@
 import './App.sass'
+import Reservations from "./components/Reservations/Reservations.tsx";
 
 function App() {
   return (
     <>
-      <h1>Test</h1>
+      <Reservations />
     </>
   )
 }

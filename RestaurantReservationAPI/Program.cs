@@ -27,7 +27,7 @@ var username = builder.Configuration["Database:Username"] ?? "defaultuser";
 var password = builder.Configuration["Database:Password"] ?? "defaultpassword";
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
   ?.Replace("{Database:Username}", username)
-  .Replace("{Database:Password}", password);
+  ?.Replace("{Database:Password}", password);
 
 if (string.IsNullOrEmpty(connectionString))
 {
@@ -37,6 +37,17 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Services.AddDbContext<DataContext>(options =>
 {
   options.UseNpgsql(connectionString); // PostgreSQL
+});
+
+// Configure CORS
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("AllowFrontend", policy =>
+  {
+    policy.WithOrigins("http://localhost:5173") // Replace with your frontend URL
+          .AllowAnyMethod()
+          .AllowAnyHeader();
+  });
 });
 
 var app = builder.Build();
@@ -57,7 +68,10 @@ app.UseSwaggerUI(c =>
 
 // Configure middleware
 app.UseHttpsRedirection();
-// app.UseErrorHandling();
+app.UseErrorHandling();
+
+// Use CORS
+app.UseCors("AllowFrontend");
 app.UseAuthorization();
 app.MapControllers();
 
