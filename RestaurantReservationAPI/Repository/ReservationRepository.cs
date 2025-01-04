@@ -45,6 +45,38 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
     {
       throw new ArgumentException("Table is already reserved for the selected time.");
     }
+    // Check if Restaurant is open
+    var openingHours = await Context.OpeningHours
+      .FirstOrDefaultAsync(o => o.Day == newReservation.ReservationDate.DayOfWeek);
+    if (openingHours == null)
+    {
+      throw new ArgumentException("Restaurant is closed on this day");
+    }
+    // Check if Reservation is within opening hours
+    var openingTime = new DateTime(newReservation.ReservationDate.Year, newReservation.ReservationDate.Month,
+      newReservation.ReservationDate.Day, openingHours.OpeningTime.Hours, openingHours.OpeningTime.Minutes, 0);
+    if (openingHours is { BreakStartTime: not null, BreakEndTime: not null })
+    {
+      var breakStartTime = new DateTime(newReservation.ReservationDate.Year, newReservation.ReservationDate.Month,
+        newReservation.ReservationDate.Day, openingHours.BreakStartTime.Value.Hours, openingHours.BreakStartTime.Value.Minutes, 0);
+      var breakEndTime = new DateTime(newReservation.ReservationDate.Year, newReservation.ReservationDate.Month,
+        newReservation.ReservationDate.Day, openingHours.BreakEndTime.Value.Hours, openingHours.BreakEndTime.Value.Minutes, 0);
+      if (newReservation.ReservationDate >= breakStartTime && newReservation.ReservationDate <= breakEndTime)
+      {
+        throw new ArgumentException("Reservation is during break time");
+      }
+    }
+    // Closing time can be after Midnight
+    if (openingHours.ClosingTime.Days == 1)
+    {
+      newReservation.ReservationDate = newReservation.ReservationDate.AddDays(1);
+    }
+    var closingTime = new DateTime(newReservation.ReservationDate.Year, newReservation.ReservationDate.Month,
+      newReservation.ReservationDate.Day + openingHours.ClosingTime.Days, openingHours.ClosingTime.Hours, openingHours.ClosingTime.Minutes, 0);
+    if (newReservation.ReservationDate < openingTime || newReservation.ReservationDate > closingTime)
+    {
+      throw new ArgumentException("Reservation is outside of opening hours");
+    }
     await Context.Reservations.AddAsync(newReservation);
     await Context.SaveChangesAsync();
     return newReservation;

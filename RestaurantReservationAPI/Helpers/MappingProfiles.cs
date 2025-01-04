@@ -1,5 +1,6 @@
 using AutoMapper;
 using RestaurantReservationAPI.DTOs.Availability;
+using RestaurantReservationAPI.DTOs.OpeningHours;
 using RestaurantReservationAPI.DTOs.Reservations;
 using RestaurantReservationAPI.DTOs.Restaurants;
 using RestaurantReservationAPI.DTOs.Tables;
@@ -51,7 +52,6 @@ namespace RestaurantReservationAPI.Helpers
             CreateMap<Restaurant, RequestDeleteRestaurantDto>().ReverseMap();
             CreateMap<Restaurant, RequestGetRestaurantDto>().ReverseMap();
             CreateMap<Restaurant, RequestGetRestaurantsDto>().ReverseMap();
-            CreateMap<Restaurant, RequestUpdateRestaurantOpeningHoursDto>().ReverseMap();
 
             CreateMap<Restaurant, ResponseRestaurantDto>().ReverseMap();
             CreateMap<Restaurant, ResponseGetRestaurantDto>().ReverseMap();
@@ -59,6 +59,20 @@ namespace RestaurantReservationAPI.Helpers
             CreateMap<Restaurant, ResponseCreateRestaurantDto>().ReverseMap();
             CreateMap<Restaurant, ResponseUpdateRestaurantDto>().ReverseMap();
             CreateMap<Restaurant, ResponseDeleteRestaurantDto>().ReverseMap();
+
+            CreateMap<OpeningHours, RequestOpeningHoursDto>().ReverseMap();
+            CreateMap<OpeningHours, RequestCreateOpeningHoursDto>().ReverseMap();
+            CreateMap<OpeningHours, RequestUpdateOpeningHoursDto>().ReverseMap();
+            CreateMap<OpeningHours, RequestDeleteOpeningHoursDto>().ReverseMap();
+            CreateMap<OpeningHours, RequestGetOpeningHoursDto>().ReverseMap();
+            CreateMap<OpeningHours, RequestGetAllOpeningHoursDto>().ReverseMap();
+
+            CreateMap<OpeningHours, ResponseOpeningHoursDto>().ReverseMap();
+            CreateMap<OpeningHours, ResponseGetOpeningHoursDto>().ReverseMap();
+            CreateMap<OpeningHours, ResponseGetAllOpeningHoursDto>().ReverseMap();
+            CreateMap<OpeningHours, ResponseCreateOpeningHoursDto>().ReverseMap();
+            CreateMap<OpeningHours, ResponseUpdateOpeningHoursDto>().ReverseMap();
+            CreateMap<OpeningHours, ResponseDeleteOpeningHoursDto>().ReverseMap();
 
             CreateMap<Availability, ResponseGetGeneralAvailabilityDto>().ReverseMap();
         }
