@@ -17,7 +17,7 @@ public class OpeningHoursRepository(DataContext context)
       .FirstOrDefaultAsync(o => o.RestaurantId == newOpeningHours.RestaurantId && o.Day == newOpeningHours.Day);
     if (openingHours != null)
     {
-      throw new ArgumentException("Opening hours for this day already exists");
+      return await UpdateEntityByIdAsync(newOpeningHours);
     }
     // check if closing time is after midnight, if yes add Day + 1
     if (newOpeningHours.ClosingTime < newOpeningHours.OpeningTime)

@@ -1,9 +1,9 @@
 import {ReservationObject} from "../models/reservation.ts";
 
-const BASE_URL = 'http://localhost:5101/api'; // Replace with your backend URL
+const BASE_URL = 'http://localhost:5101/api/Reservation'; // Replace with your backend URL
 
 export const fetchAllReservations = async () => {
-  const response = await fetch(`${BASE_URL}/Reservation/GetAll`);
+  const response = await fetch(`${BASE_URL}/GetAll`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }

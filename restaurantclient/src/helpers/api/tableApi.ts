@@ -1,10 +1,10 @@
 import {TableObject} from "../models/table.ts";
 import {ReservationObject} from "../models/reservation.ts";
 
-const BASE_URL = 'http://localhost:5101/api'; // Replace with your backend URL
+const BASE_URL = 'http://localhost:5101/api/Table'; // Replace with your backend URL
 
 export async function fetchAllTables() {
-  const response = await fetch(`${BASE_URL}/Table/GetAll`);
+  const response = await fetch(`${BASE_URL}/GetAll`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
