@@ -1,6 +1,7 @@
 using AutoMapper;
 using RestaurantReservationAPI.DTOs.Availability;
 using RestaurantReservationAPI.DTOs.Reservations;
+using RestaurantReservationAPI.DTOs.Restaurants;
 using RestaurantReservationAPI.DTOs.Tables;
 using RestaurantReservationAPI.Models;
 
@@ -43,6 +44,21 @@ namespace RestaurantReservationAPI.Helpers
             CreateMap<Table, ResponseCreateTableDto>().ReverseMap();
             CreateMap<Table, ResponseUpdateTableDto>().ReverseMap();
             CreateMap<Table, ResponseDeleteTableDto>().ReverseMap();
+
+            CreateMap<Restaurant, RequestRestaurantDto>().ReverseMap();
+            CreateMap<Restaurant, RequestCreateRestaurantDto>().ReverseMap();
+            CreateMap<Restaurant, RequestUpdateRestaurantDto>().ReverseMap();
+            CreateMap<Restaurant, RequestDeleteRestaurantDto>().ReverseMap();
+            CreateMap<Restaurant, RequestGetRestaurantDto>().ReverseMap();
+            CreateMap<Restaurant, RequestGetRestaurantsDto>().ReverseMap();
+            CreateMap<Restaurant, RequestUpdateRestaurantOpeningHoursDto>().ReverseMap();
+
+            CreateMap<Restaurant, ResponseRestaurantDto>().ReverseMap();
+            CreateMap<Restaurant, ResponseGetRestaurantDto>().ReverseMap();
+            CreateMap<Restaurant, ResponseGetRestaurantsDto>().ReverseMap();
+            CreateMap<Restaurant, ResponseCreateRestaurantDto>().ReverseMap();
+            CreateMap<Restaurant, ResponseUpdateRestaurantDto>().ReverseMap();
+            CreateMap<Restaurant, ResponseDeleteRestaurantDto>().ReverseMap();
 
             CreateMap<Availability, ResponseGetGeneralAvailabilityDto>().ReverseMap();
         }

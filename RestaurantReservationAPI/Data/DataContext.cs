@@ -7,6 +7,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 {
   public DbSet<Reservation> Reservations { get; set; }
   public DbSet<Table> Tables { get; set; }
+  public DbSet<Restaurant> Restaurants { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

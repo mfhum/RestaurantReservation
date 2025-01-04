@@ -1,13 +1,15 @@
 import './App.sass'
-import AllReservations from "./components/AllReservations/AllReservations.tsx";
-import AllTables from "./components/AllTables/AllTables.tsx";
-
+import OwnerOverview from "./pages/Owner/OwnerOverview.tsx";
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import ReservationPlatform from "./pages/ReservationPlatform/ReservationPlatform.tsx";
 function App() {
   return (
-    <>
-      <AllReservations />
-      <AllTables />
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<OwnerOverview />} />
+        <Route path="/reservations" element={<ReservationPlatform />} />
+      </Routes>
+    </Router>
   )
 }
 
