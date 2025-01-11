@@ -15,7 +15,7 @@ function OpeningHoursForm() {
     breakEndTime: '',
     closingTime: ''
   });
-  const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+  const timeRegex = /^([01]?\d|2[0-3]):([0-5]\d)$/; // Allow 0-23 hours and 00-59 minutes
 
   const GetAllOpeningHours = useQuery({
     queryKey: ['GetAllOpeningHours'],
@@ -24,11 +24,19 @@ function OpeningHoursForm() {
   });
 
   const CreateOpeningHours = useMutation<OpeningHoursObject, Error, OpeningHoursObject>({
-    mutationFn: createOpeningHours, // Pass the mutation function
+    mutationFn: createOpeningHours,
     onSuccess: () => {
-      GetAllOpeningHours.refetch(); // Trigger a refetch on success
+      GetAllOpeningHours.refetch();
     },
   });
+
+  const formatTime = (time: string | undefined) => {
+    if (!time) return ''; // Return empty if undefined
+    const daySplit = time.split('.');
+    const timePart = daySplit.length === 2 ? daySplit[1] : daySplit[0]; // Extract "03:00:00"
+    const parts = timePart.split(':');
+    return `${parts[0]}:${parts[1]}`; // Return only hh:mm
+  };
 
   useEffect(() => {
     if (GetAllOpeningHours.data) {
@@ -57,10 +65,10 @@ function OpeningHoursForm() {
     setWeekday(day);
     const existingData = dayMap[day];
     setFormValues({
-      openingTime: existingData?.openingTime?.slice(0, 5) || '',
-      breakStartTime: existingData?.breakStartTime?.slice(0, 5) || '',
-      breakEndTime: existingData?.breakEndTime?.slice(0, 5) || '',
-      closingTime: existingData?.closingTime?.slice(0, 5) || ''
+      openingTime: formatTime(existingData?.openingTime),
+      breakStartTime: formatTime(existingData?.breakStartTime),
+      breakEndTime: formatTime(existingData?.breakEndTime),
+      closingTime: formatTime(existingData?.closingTime)
     });
   };
 
@@ -72,7 +80,7 @@ function OpeningHoursForm() {
       openingTime: formValues.openingTime,
       breakStartTime: formValues.breakStartTime || undefined,
       breakEndTime: formValues.breakEndTime || undefined,
-      closingTime: formValues.closingTime,
+      closingTime: formValues.closingTime, // Already in hh:mm format
       restaurantId: "019431d9-d9f5-7463-b20d-a3e9d6badfe0"
     };
 
@@ -125,7 +133,7 @@ function OpeningHoursForm() {
                           id="openingTime"
                           name="openingTime"
                           value={formValues.openingTime}
-                          pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                          pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
                           placeholder="HH:mm"
                           onChange={handleInputChange}
                           required
@@ -136,7 +144,7 @@ function OpeningHoursForm() {
                           id="breakStartTime"
                           name="breakStartTime"
                           value={formValues.breakStartTime}
-                          pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                          pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
                           placeholder="HH:mm"
                           onChange={handleInputChange}
                       />
@@ -146,7 +154,7 @@ function OpeningHoursForm() {
                           id="breakEndTime"
                           name="breakEndTime"
                           value={formValues.breakEndTime}
-                          pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                          pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
                           placeholder="HH:mm"
                           onChange={handleInputChange}
                       />
@@ -156,7 +164,7 @@ function OpeningHoursForm() {
                           id="closingTime"
                           name="closingTime"
                           value={formValues.closingTime}
-                          pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                          pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
                           placeholder="HH:mm"
                           onChange={handleInputChange}
                           required
