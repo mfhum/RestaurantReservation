@@ -31,80 +31,74 @@ function OpeningHoursForm() {
   });
 
   // Handle form submission
-  const handleOpeningHoursFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log(formValues);
-    const newOpeningHours: OpeningHoursObject = {
-      day: weekday,
-      openingTime: formValues.openingTime,
-      breakStartTime: formValues.breakStartTime != '' ? formValues.breakStartTime : undefined,
-      breakEndTime: formValues.breakEndTime != '' ? formValues.breakEndTime : undefined,
-      closingTime: formValues.closingTime,
-      restaurantId: "019431d9-d9f5-7463-b20d-a3e9d6badfe0"
-    };
-    if (!timeRegex.test(newOpeningHours.openingTime) || !timeRegex.test(newOpeningHours.closingTime)) {
-      alert('Please enter a valid time');
-      return;
-    }
-    if (newOpeningHours.breakStartTime !== undefined && newOpeningHours.breakEndTime !== undefined) {
-      if (!timeRegex.test(newOpeningHours.breakStartTime as string) || !timeRegex.test(newOpeningHours.breakEndTime as string)) {
-        alert('Please enter a valid time');
-        return;
-      }
-    }
-    event.currentTarget.reset();
-    setWeekday(days[0]);
-    console.log(newOpeningHours);
-    CreateOpeningHours.mutate(newOpeningHours);
-    alert('Opening Hours Submitted');
-  };
-
-  // Handle input change
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
-
-  // Populate dayMap on data fetch
-  useEffect(() => {
     if (GetAllOpeningHours.data) {
-      const updatedDayMap: OpeningHoursObject[] = GetAllOpeningHours.data.reduce<OpeningHoursObject[]>(
-          (map, item) => {
-            map[item.day] = item; // Map the day to the corresponding object
-            return map;
-          },
-          Array.from({ length: 8 }, () => undefined) // Safely initialize array
-      );
+      const updatedDayMap: (OpeningHoursObject | undefined)[] = Array.from({ length: 8 }, () => undefined);
+      GetAllOpeningHours.data.forEach((item) => {
+        updatedDayMap[item.day] = item;
+      });
 
-      const arraysAreEqual = (a: any[], b: any[]) => {
-        return a.length === b.length && a.every((val, index) => val === b[index]);
+      const arraysAreEqual = (a: (OpeningHoursObject | undefined)[], b: (OpeningHoursObject | undefined)[]) => {
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+          if (JSON.stringify(a[i]) !== JSON.stringify(b[i])) {
+            return false;
+          }
+        }
+        return true;
       };
 
       if (!arraysAreEqual(updatedDayMap, dayMap)) {
         setDayMap(updatedDayMap);
       }
     }
-  }, [GetAllOpeningHours.data]);
+  }, [GetAllOpeningHours.data, dayMap]);
 
-  // Handle day selection and populate form with existing data
   const handleDayClick = (day: number) => {
     setWeekday(day);
     const existingData = dayMap[day];
-    if (existingData) {
-      setFormValues({
-        openingTime: existingData.openingTime ? existingData.openingTime.slice(0, 5) : '', // Format to HH:mm
-        breakStartTime: existingData.breakStartTime ? existingData.breakStartTime.slice(0, 5) : '',
-        breakEndTime: existingData.breakEndTime ? existingData.breakEndTime.slice(0, 5) : '',
-        closingTime: existingData.closingTime ? existingData.closingTime.slice(0, 5) : ''
-      });
-    } else {
-      setFormValues({
-        openingTime: '',
-        breakStartTime: '',
-        breakEndTime: '',
-        closingTime: ''
-      });
+    setFormValues({
+      openingTime: existingData?.openingTime?.slice(0, 5) || '',
+      breakStartTime: existingData?.breakStartTime?.slice(0, 5) || '',
+      breakEndTime: existingData?.breakEndTime?.slice(0, 5) || '',
+      closingTime: existingData?.closingTime?.slice(0, 5) || ''
+    });
+  };
+
+  const handleOpeningHoursFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const newOpeningHours: OpeningHoursObject = {
+      day: weekday,
+      openingTime: formValues.openingTime,
+      breakStartTime: formValues.breakStartTime || undefined,
+      breakEndTime: formValues.breakEndTime || undefined,
+      closingTime: formValues.closingTime,
+      restaurantId: "019431d9-d9f5-7463-b20d-a3e9d6badfe0"
+    };
+
+    if (!timeRegex.test(newOpeningHours.openingTime) || !timeRegex.test(newOpeningHours.closingTime)) {
+      alert('Please enter a valid opening and closing time in HH:mm format.');
+      return;
     }
+
+    if (
+        (newOpeningHours.breakStartTime && !timeRegex.test(newOpeningHours.breakStartTime)) ||
+        (newOpeningHours.breakEndTime && !timeRegex.test(newOpeningHours.breakEndTime))
+    ) {
+      alert('Please enter valid break times in HH:mm format.');
+      return;
+    }
+
+    console.log(newOpeningHours);
+    CreateOpeningHours.mutate(newOpeningHours);
+    alert('Opening Hours Submitted');
+    event.currentTarget.reset();
+    setWeekday(days[0]);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormValues({ ...formValues, [name]: value });
   };
 
   return (
@@ -117,7 +111,7 @@ function OpeningHoursForm() {
                 {days.slice(1).map((day, index) => (
                     <ul key={index} onClick={() => handleDayClick(day)}>
                       {['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'][index]}
-                      <div className={dayMap[day] != undefined ? classes.open : classes.closed}></div>
+                      <div className={dayMap[day] ? classes.open : classes.closed}></div>
                     </ul>
                 ))}
               </li>
@@ -132,7 +126,7 @@ function OpeningHoursForm() {
                           name="openingTime"
                           value={formValues.openingTime}
                           pattern="^([01]\d|2[0-3]):([0-5]\d)$"
-                          placeholder={'HH:mm'}
+                          placeholder="HH:mm"
                           onChange={handleInputChange}
                           required
                       />
@@ -143,7 +137,7 @@ function OpeningHoursForm() {
                           name="breakStartTime"
                           value={formValues.breakStartTime}
                           pattern="^([01]\d|2[0-3]):([0-5]\d)$"
-                          placeholder={'HH:mm'}
+                          placeholder="HH:mm"
                           onChange={handleInputChange}
                       />
                       <label htmlFor="breakEndTime">Break End Time</label>
@@ -153,7 +147,7 @@ function OpeningHoursForm() {
                           name="breakEndTime"
                           value={formValues.breakEndTime}
                           pattern="^([01]\d|2[0-3]):([0-5]\d)$"
-                          placeholder={'HH:mm'}
+                          placeholder="HH:mm"
                           onChange={handleInputChange}
                       />
                       <label htmlFor="closingTime">Closing Time*</label>
@@ -163,11 +157,11 @@ function OpeningHoursForm() {
                           name="closingTime"
                           value={formValues.closingTime}
                           pattern="^([01]\d|2[0-3]):([0-5]\d)$"
-                          placeholder={'HH:mm'}
+                          placeholder="HH:mm"
                           onChange={handleInputChange}
                           required
                       />
-                      <br/>
+                      <br />
                       <button type="submit">Submit</button>
                     </form>
                   </>
