@@ -30,7 +30,7 @@ function OpeningHoursForm() {
     },
   });
 
-  // Handle form submission
+  useEffect(() => {
     if (GetAllOpeningHours.data) {
       const updatedDayMap: (OpeningHoursObject | undefined)[] = Array.from({ length: 8 }, () => undefined);
       GetAllOpeningHours.data.forEach((item) => {
