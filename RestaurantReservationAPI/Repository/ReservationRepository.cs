@@ -169,5 +169,10 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
     return reservations;
   }
 
-
+  public async Task<ICollection<Reservation>> GetReservationsByTimeRangeAndTableSize(DateTime startTime, DateTime endTime, int numberOfGuests)
+  {
+    var allReservations = await GetAllAsync();
+    var reservations = allReservations.Where(r => r.ReservationDate >= startTime && r.ReservationDate <= endTime && r.Guests == numberOfGuests).ToList();
+    return reservations;
+  }
 }

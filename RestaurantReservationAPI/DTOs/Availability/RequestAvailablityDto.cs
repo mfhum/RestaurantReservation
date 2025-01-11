@@ -7,3 +7,5 @@ public class RequestAvailablityDto
 }
 
 public class RequestGetGeneralAvailabilityDto : RequestAvailablityDto;
+
+public class RequestGetAvailabilityForMonthDto : RequestAvailablityDto;

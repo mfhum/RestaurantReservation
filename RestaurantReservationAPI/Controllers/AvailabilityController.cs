@@ -21,5 +21,16 @@ namespace RestaurantReservationAPI.Controllers
       return Ok(reservationsDto);
     }
 
+    [HttpGet("GetAvailabilityForMonth")]
+    public async Task<ActionResult<List<ResponseGetAvailabilityForMonthDto>>> GetAvailabilityForMonth([FromQuery] RequestGetAvailabilityForMonthDto availabilityForMonthDto)
+    {
+      var reservations = await availabilityRepository.GetAvailabilityByMonth(
+        availabilityForMonthDto.ReservationTime,
+        availabilityForMonthDto.NumberOfGuests
+      );
+      var reservationsDto = mapper.Map<List<ResponseGetAvailabilityForMonthDto>>(reservations);
+      return Ok(reservationsDto);
+    }
+
   }
 }
