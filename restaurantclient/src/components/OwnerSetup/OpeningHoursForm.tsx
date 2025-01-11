@@ -1,12 +1,13 @@
 import classes from './OpeningHoursForm.module.sass';
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { getAllOpeningHours } from '../../helpers/api/openingHoursApi.ts';
+import React, {useEffect, useState} from 'react';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {createOpeningHours, getAllOpeningHours} from '../../helpers/api/openingHoursApi.ts';
 import { OpeningHoursObject } from '../../helpers/models/openinghours.ts';
 
 function OpeningHoursForm() {
   const days = [0, 1, 2, 3, 4, 5, 6, 7];
-  const dayMap = [99, undefined, undefined, undefined, undefined, undefined, undefined, undefined];
+  const dayMapBase = [99, undefined, undefined, undefined, undefined, undefined, undefined, undefined];
+  const [dayMap, setDayMap] = useState(dayMapBase);
   const [weekday, setWeekday] = useState(days[0]);
   const [formValues, setFormValues] = useState({
     openingTime: '',
@@ -21,6 +22,14 @@ function OpeningHoursForm() {
     queryFn: () => getAllOpeningHours(),
     enabled: true,
   });
+
+  const CreateOpeningHours = useMutation<OpeningHoursObject, Error, OpeningHoursObject>({
+    mutationFn: createOpeningHours, // Pass the mutation function
+    onSuccess: () => {
+      GetAllOpeningHours.refetch(); // Trigger a refetch on success
+    },
+  });
+
 
   const handleOpeningHoursFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -44,6 +53,7 @@ function OpeningHoursForm() {
     }
     event.currentTarget.reset();
     setWeekday(days[0]);
+    CreateOpeningHours.mutate(newOpeningHours);
     alert('Opening Hours Submitted');
   };
 
@@ -52,16 +62,36 @@ function OpeningHoursForm() {
     setFormValues({ ...formValues, [name]: value });
   };
 
-  if (GetAllOpeningHours.data) {
-    for (let i = 0; i < GetAllOpeningHours.data.length; i++) {
-      dayMap[GetAllOpeningHours.data[i].day] = i;
+  useEffect(() => {
+    if (GetAllOpeningHours.data) {
+      const updatedDayMap: OpeningHoursObject[] = GetAllOpeningHours.data.reduce<OpeningHoursObject[]>(
+          (map, item) => {
+            map[item.day] = item; // Map the day to the corresponding object
+            return map;
+          },
+          Array(8).fill(undefined) // Initialize array with 8 undefined entries
+      );
+
+      // Avoid state update if arrays are identical
+      const areArraysEqual = (a: any[], b: any[]) => {
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+          if (a[i] !== b[i]) return false;
+        }
+        return true;
+      };
+
+      if (!areArraysEqual(updatedDayMap, dayMap)) {
+        setDayMap(updatedDayMap);
+      }
     }
-    console.log(dayMap);
-  }
+  }, [GetAllOpeningHours.data, dayMap]); // Dependencies: re-run only if data or dayMap changes
+
+
 
   return (
       <>
-        {GetAllOpeningHours.isPending ? (
+        {GetAllOpeningHours.isLoading ? (
             'Loading...'
         ) : (
             <>
