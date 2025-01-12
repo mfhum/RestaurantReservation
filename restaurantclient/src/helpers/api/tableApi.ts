@@ -14,7 +14,6 @@ export async function fetchAllTables() {
 export async function fetchReservationsByTableId(tableId: string) {
   const response = await fetch(`${BASE_URL}/Reservation/GetReservationsByTableId/?TableId=${tableId}`);
   if (response.status === 404) {
-    console.log('No reservations found for this table');
     throw new Error('No reservations found for this table');
   }
   if (!response.ok) {

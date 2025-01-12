@@ -102,8 +102,6 @@ function OpeningHoursForm() {
       alert('Please enter valid break times in HH:mm format.');
       return;
     }
-
-    console.log(newOpeningHours);
     CreateOpeningHours.mutate(newOpeningHours);
     alert('Opening Hours Submitted');
     event.currentTarget.reset();
