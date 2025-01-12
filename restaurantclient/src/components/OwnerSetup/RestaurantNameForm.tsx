@@ -1,15 +1,17 @@
-import React, {useState} from "react";
+import React from "react";
 import {RestaurantObject} from "../../helpers/models/restaurant.ts";
-import {useQuery} from "@tanstack/react-query";
+import {useMutation} from "@tanstack/react-query";
 import {createRestaurant} from "../../helpers/api/restaurantApi.ts";
 
 function RestaurantNameForm() {
-  const [newRestaurant, setNewRestaurant] = useState<RestaurantObject>({ name: '' });
-  const CreateRestaurantQuery= useQuery({
-    queryKey: ['CreateRestaurant', newRestaurant],
-    queryFn: () => createRestaurant(newRestaurant),
-    enabled: newRestaurant.name != '',
-  })
+
+  const CreateRestaurantQuery = useMutation<RestaurantObject, Error, RestaurantObject>({
+    mutationFn: createRestaurant,
+    onSuccess: () => {
+      // Do something after the mutation has succeeded
+    },
+  });
+
 
   const handleRestaurantNameFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     // Prevent the default form submission behavior
@@ -18,7 +20,7 @@ function RestaurantNameForm() {
     const creatableRestaurant: RestaurantObject = {
       name: restaurantName
     }
-    setNewRestaurant(creatableRestaurant);
+    CreateRestaurantQuery.mutate(creatableRestaurant);
   }
   return (
       <>
