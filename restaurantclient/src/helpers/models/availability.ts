@@ -1,7 +1,13 @@
-export interface AvailabilityByDay {
+export interface AvailabilityByMonth {
   day: number;
   state: number;
 }
+
+export interface AvailabilityByDay {
+  reservationTime: Date;
+  tableCount: number;
+}
+
 
 const stateMapping: { [key: number]: string } = {
   0: 'inPast',

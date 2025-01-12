@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AvailabilityByDay } from "../../helpers/models/availability";
+import { AvailabilityByMonth } from "../../helpers/models/availability";
 import classes from "./CustomDatePicker.module.sass";
 
 function CustomDatePicker({
@@ -8,7 +8,7 @@ function CustomDatePicker({
                             onMonthChange,
                             onDayChange,
                           }: {
-  availability: AvailabilityByDay[];
+  availability: AvailabilityByMonth[];
   reservationTime: string;
   onMonthChange: (date: string) => void;
   onDayChange: (date: string) => void;
