@@ -10,23 +10,10 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
 {
     public async Task<ICollection<Availability>> GetAvailabilityByTimeAndGuests(DateTime reservationTime, int numberOfGuests)
     {
-        var roundedReservationTime = new DateTime(
-            reservationTime.Year,
-            reservationTime.Month,
-            reservationTime.Day,
-            reservationTime.Hour,
-            reservationTime.Minute % 15 == 0 ? reservationTime.Minute : (reservationTime.Minute / 15 + 1) * 15 % 60,
-            0,
-            DateTimeKind.Utc);
+        var roundedReservationTime = ParseTime(reservationTime, reservationTime.TimeOfDay);
 
         // Generate 15-minute intervals for the next 2 hours
-        var timeSlots = new List<DateTime> { roundedReservationTime };
-        for (var i = 1; i <= 8; i++)
-        {
-            timeSlots.Add(roundedReservationTime.AddMinutes(i * 15));
-
-        }
-
+        var timeSlots = GenerateTimeSlots(roundedReservationTime, roundedReservationTime.AddHours(2), null, null);
 
         // Fetch all tables and reservations for the relevant time range
         var allTables = await context.Tables.ToListAsync();
@@ -36,6 +23,7 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
         );
 
         // Calculate availability for each time slot
+
         var availability = (from timeSlot in timeSlots
             let reservedTableIds = reservations
                 .Where(r => r.ReservationDate <= timeSlot.AddMinutes(90) && r.ReservationDate.AddMinutes(90) > timeSlot)
@@ -61,14 +49,10 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
         var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
         // check if month is not this month or the future
         if (firstDayOfMonth.Month < DateTime.UtcNow.AddMinutes(60).Month)
-        {
             throw new ArgumentException("Month must be in the future");
-        }
         // check if month is not more than 3 months in the future
         if (firstDayOfMonth.Month > DateTime.UtcNow.AddMonths(3).AddMinutes(60).Month)
-        {
             throw new ArgumentException("Month must be in the next 3 months");
-        }
         // get all reservations for the sent month
         var allReservationsByTimeRange = await reservationRepository.GetReservationsByTimeRangeAndTableSize(firstDayOfMonth, lastDayOfMonth, numberOfGuests);
         // loop over all
@@ -117,7 +101,6 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
                 });
                 continue;
             }
-
             availabilityForMonth.Add(new AvailabilityForDay()
             {
                 Day = dayOfMonth,
@@ -133,36 +116,14 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
     var openingHours = await context.OpeningHours.FirstOrDefaultAsync(o => o.Day == reservationTime.DayOfWeek);
 
     // Check if the restaurant is closed
-    if (openingHours == null)
-    {
-        return false;
-    }
+    if (openingHours == null) return false;
 
     // Parse opening and closing times
-    var openDateTime = new DateTime(
-        reservationTime.Year,
-        reservationTime.Month,
-        reservationTime.Day,
-        openingHours.OpeningTime.Hours,
-        openingHours.OpeningTime.Minutes,
-        0);
-
-    var closingDateTime = new DateTime(
-        reservationTime.Year,
-        reservationTime.Month,
-        reservationTime.Day,
-        openingHours.ClosingTime.Hours,
-        openingHours.ClosingTime.Minutes,
-        0);
+    var openDateTime = ParseTime(reservationTime, openingHours.OpeningTime);
+    var closingDateTime = ParseTime(reservationTime, openingHours.ClosingTime);
 
     // Adjust for overnight closing times
-    if (openingHours.ClosingTime.Days == 1)
-    {
-        closingDateTime = closingDateTime.AddDays(1);
-    }
-
-    // Create time slots excluding break times
-    var timeSlots = new List<DateTime>();
+    if (openingHours.ClosingTime.Days == 1) closingDateTime = closingDateTime.AddDays(1);
 
     // Add break handling
     DateTime? breakStartDateTime = null;
@@ -170,37 +131,12 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
 
     if (openingHours.BreakStartTime.HasValue && openingHours.BreakEndTime.HasValue)
     {
-        breakStartDateTime = new DateTime(
-            reservationTime.Year,
-            reservationTime.Month,
-            reservationTime.Day,
-            openingHours.BreakStartTime.Value.Hours,
-            openingHours.BreakStartTime.Value.Minutes,
-            0);
-
-        breakEndDateTime = new DateTime(
-            reservationTime.Year,
-            reservationTime.Month,
-            reservationTime.Day,
-            openingHours.BreakEndTime.Value.Hours,
-            openingHours.BreakEndTime.Value.Minutes,
-            0);
+        breakStartDateTime = ParseTime(reservationTime, openingHours.BreakStartTime.Value);
+        breakEndDateTime = ParseTime(reservationTime, openingHours.BreakEndTime. Value);
     }
 
     // Generate 15-minute intervals excluding breaks
-    var currentTime = openDateTime;
-    while (currentTime < closingDateTime.AddMinutes(-90))
-    {
-        if (breakStartDateTime.HasValue && breakEndDateTime.HasValue &&
-            currentTime >= breakStartDateTime && currentTime < breakEndDateTime)
-        {
-            currentTime = breakEndDateTime.Value;
-            continue;
-        }
-
-        timeSlots.Add(currentTime);
-        currentTime = currentTime.AddMinutes(15);
-    }
+    var timeSlots =GenerateTimeSlots(openDateTime, closingDateTime, breakStartDateTime, breakEndDateTime);
 
     // Fetch all tables and reservations for the relevant time range
     var allTables = await context.Tables.ToListAsync();
@@ -209,22 +145,34 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
         timeSlots.Last().AddMinutes(90));
 
     // Check availability for each time slot
-    foreach (var timeSlot in timeSlots)
-    {
-        var reservedTableIds = reservations
-            .Where(r => r.ReservationDate <= timeSlot.AddMinutes(90) && r.ReservationDate.AddMinutes(90) > timeSlot)
+    return timeSlots.Select(timeSlot => reservations.Where(r => r.ReservationDate <= timeSlot.AddMinutes(90) && r.ReservationDate.AddMinutes(90) > timeSlot)
             .Select(r => r.TableId)
-            .ToHashSet();
+            .ToHashSet())
+        .Select(reservedTableIds => allTables.Count(t => t.Seats >= numberOfGuests && !reservedTableIds.Contains(t.TableId)))
+        .Any(freeTablesCount => freeTablesCount > 0);
+}
 
-        var freeTablesCount = allTables
-            .Count(t => t.Seats >= numberOfGuests && !reservedTableIds.Contains(t.TableId));
-
-        if (freeTablesCount > 0)
+    private static List<DateTime> GenerateTimeSlots(DateTime openDateTime, DateTime closingDateTime, DateTime? breakStartDateTime, DateTime? breakEndDateTime)
+    {
+        var timeSlots = new List<DateTime>();
+        var currentTime = openDateTime;
+        while (currentTime < closingDateTime.AddMinutes(-90))
         {
-            return true;
+            if (breakStartDateTime.HasValue && breakEndDateTime.HasValue &&
+                currentTime >= breakStartDateTime && currentTime < breakEndDateTime)
+            {
+                currentTime = breakEndDateTime.Value;
+                continue;
+            }
+            timeSlots.Add(currentTime);
+            currentTime = currentTime.AddMinutes(15);
         }
+        return timeSlots;
     }
 
-    return false;
-}
+    private static DateTime ParseTime(DateTime date, TimeSpan time)
+    {
+        return new DateTime(date.Year, date.Month, date.Day, time.Hours,
+            time.Minutes % 15 == 0 ? time.Minutes : (time.Minutes / 15 + 1) * 15 % 60, 0);
+    }
 }

@@ -78,8 +78,8 @@ namespace RestaurantReservationAPI.Helpers
             CreateMap<Availability, RequestGetGeneralAvailabilityDto>().ReverseMap();
             CreateMap<Availability, RequestGetAvailabilityForMonthDto>().ReverseMap();
 
-            CreateMap<Availability, RequestAvailablityDto>().ReverseMap();
-            CreateMap<Availability, RequestGetGeneralAvailabilityDto>().ReverseMap();
+            CreateMap<Availability, ResponseAvailabilityDto>().ReverseMap();
+            CreateMap<Availability, ResponseGetGeneralAvailabilityDto>().ReverseMap();
             CreateMap<AvailabilityForDay, ResponseGetAvailabilityForMonthDto>().ReverseMap();
         }
     }
