@@ -6,10 +6,12 @@ function CustomDatePicker({
                             availability,
                             reservationTime,
                             onMonthChange,
+                            onDayChange,
                           }: {
   availability: AvailabilityByDay[];
   reservationTime: string;
   onMonthChange: (date: string) => void;
+  onDayChange: (date: string) => void;
 }) {
   const months = [
     "Januar", "Februar", "März", "April", "Mai", "Juni",
@@ -20,8 +22,6 @@ function CustomDatePicker({
   const [currentMonth, setCurrentMonth] = useState(reservationDate.getMonth());
   const [currentYear, setCurrentYear] = useState(reservationDate.getFullYear());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-console.log("month:", currentMonth);
-console.log("year:", currentYear);
   function getClassName(state?: number): string {
     switch (state) {
       case 0:
@@ -87,6 +87,11 @@ console.log("year:", currentYear);
     }
   };
 
+  function handleDayClick(date: Date) {
+    setSelectedDate(date);
+    onDayChange(date.toISOString());
+  }
+
   return (
       <div className={classes.calendarContainer}>
         <h2 className={classes.calendarTitle}>WÄHLE EIN DATUM AUS</h2>
@@ -111,7 +116,7 @@ console.log("year:", currentYear);
               date ? (
                   <button
                       key={index}
-                      onClick={() => setSelectedDate(date)}
+                      onClick={() => handleDayClick(date)}
                       className={`${classes.day} ${
                           selectedDate?.getTime() === date.getTime()
                               ? classes.selectedDay

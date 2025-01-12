@@ -7,6 +7,7 @@ import classes from "./ReservationPlatform.module.sass";
 function ReservationPlatform() {
   const [guestCount, setGuestCount] = useState(2);
   const [reservationTime, setReservationTime] = useState(new Date().toISOString());
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const GetAvailabilityForMonthQuery = useQuery({
     queryKey: ['GetAllOpeningHours', reservationTime, guestCount],
@@ -43,8 +44,10 @@ function ReservationPlatform() {
                 availability={GetAvailabilityForMonthQuery.data}
                 reservationTime={reservationTime}
                 onMonthChange={setReservationTime} // Pass the setter function
+                onDayChange={setSelectedDate} // Pass the setter function
             />
         )}
+        {selectedDate ? new Date(selectedDate).toLocaleDateString('de-DE') : 'No date selected'}
       </section>
   );
 }

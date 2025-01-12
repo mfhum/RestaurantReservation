@@ -12,8 +12,17 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
     {
         var roundedReservationTime = ParseTime(reservationTime, reservationTime.TimeOfDay);
 
-        // Generate 15-minute intervals for the next 2 hours
-        var timeSlots = GenerateTimeSlots(roundedReservationTime, roundedReservationTime.AddHours(2), null, null);
+        // Generate 15-minute intervals for the opening hours on that day
+        var openingHours = await context.OpeningHours.FirstOrDefaultAsync(o => o.Day == reservationTime.DayOfWeek);
+        if (openingHours == null) return new List<Availability>();
+
+         var timeSlots = GenerateTimeSlots(
+            ParseTime(reservationTime, openingHours.OpeningTime),
+            ParseTime(reservationTime, openingHours.ClosingTime),
+            openingHours.BreakStartTime.HasValue ? ParseTime(reservationTime, openingHours.BreakStartTime.Value) : null,
+            openingHours.BreakEndTime.HasValue ? ParseTime(reservationTime, openingHours.BreakEndTime.Value) : null
+        );
+
 
         // Fetch all tables and reservations for the relevant time range
         var allTables = await context.Tables.ToListAsync();
@@ -156,19 +165,25 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
     {
         var timeSlots = new List<DateTime>();
         var currentTime = openDateTime;
-        while (currentTime < closingDateTime.AddMinutes(-90))
+
+        while (currentTime <= closingDateTime.AddMinutes(-60))
         {
+            // Skip time slots during the break
             if (breakStartDateTime.HasValue && breakEndDateTime.HasValue &&
-                currentTime >= breakStartDateTime && currentTime < breakEndDateTime)
+                currentTime >= breakStartDateTime.Value.AddMinutes(-60) && currentTime < breakEndDateTime)
             {
                 currentTime = breakEndDateTime.Value;
                 continue;
             }
+
+            // Add valid time slot
             timeSlots.Add(currentTime);
             currentTime = currentTime.AddMinutes(15);
         }
+
         return timeSlots;
     }
+
 
     private static DateTime ParseTime(DateTime date, TimeSpan time)
     {
