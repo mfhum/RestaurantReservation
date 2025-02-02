@@ -14,12 +14,15 @@ builder.Services.AddControllers()
   {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
   });
+
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
+
 builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
 builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
 builder.Services.AddScoped<IOpeningHoursRepository, OpeningHoursRepository>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -45,9 +48,10 @@ builder.Services.AddCors(options =>
 {
   options.AddPolicy("AllowFrontend", policy =>
   {
-    policy.WithOrigins("http://localhost:5173") // Replace with your frontend URL
+    policy.WithOrigins("http://localhost:5173") // Dein React-Frontend
           .AllowAnyMethod()
-          .AllowAnyHeader();
+          .AllowAnyHeader()
+          .AllowCredentials(); // Falls Auth oder Cookies genutzt werden
   });
 });
 
@@ -67,12 +71,9 @@ app.UseSwaggerUI(c =>
   c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestaurantReservationAPI v1");
 });
 
-// Configure middleware
-app.UseHttpsRedirection();
-app.UseErrorHandling();
-
-// Use CORS
+// Middleware-Reihenfolge optimieren
 app.UseCors("AllowFrontend");
+app.UseErrorHandling(); // Falls Middleware für Fehlerhandling existiert
 app.UseAuthorization();
 app.MapControllers();
 

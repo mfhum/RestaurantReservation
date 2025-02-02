@@ -87,7 +87,7 @@ function OpeningHoursForm() {
       breakStartTime: formValues.breakStartTime || undefined,
       breakEndTime: formValues.breakEndTime || undefined,
       closingTime: formValues.closingTime, // Already in hh:mm format
-      restaurantId: "019431d9-d9f5-7463-b20d-a3e9d6badfe0"
+      restaurantId: "0194c26e-7533-735c-bd10-264f3c3752fb"
     };
 
     if (!timeRegex.test(newOpeningHours.openingTime) || !timeRegex.test(newOpeningHours.closingTime)) {

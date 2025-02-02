@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import CustomDatePicker from "../../components/FormObjects/CustomDatePicker.tsx";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import { getAvailabilityForDay, getAvailabilityForMonth } from "../../helpers/api/availabilityApi.ts";
 import classes from "./ReservationPlatform.module.sass";
 import CustomTimePicker from "../../components/FormObjects/CustomTimePicker.tsx";
-import {formatDate} from "../../helpers/functions/dateTime.ts";
+import {OpeningHoursObject} from "../../helpers/models/openinghours.ts";
+import {createOpeningHours} from "../../helpers/api/openingHoursApi.ts";
+import {ReservationObject} from "../../helpers/models/reservation.ts";
+import {createReservation} from "../../helpers/api/reservationsApi.ts";
 
 function ReservationPlatform() {
   const [guestCount, setGuestCount] = useState(2);
@@ -25,6 +28,13 @@ function ReservationPlatform() {
     enabled: !!selectedDate, // Enable query only if selectedDate is not empty
   });
 
+  const CreateReservation = useMutation<ReservationObject, Error, ReservationObject>({
+    mutationFn: createReservation,
+    onSuccess: () => {
+      GetAvailabilityForMonthQuery.refetch();
+    },
+  });
+
   useEffect(() => {
     if (selectedDate) {
       queryClient.invalidateQueries({ queryKey: ['GetAvailabilityByDay', selectedDate, guestCount] });    }
@@ -36,6 +46,14 @@ function ReservationPlatform() {
     setSelectedDate(date.toISOString());
     console.log(date.toISOString());
   }
+  
+  function handleTimeSelect(newSelectedTime: string) {
+    const date = new Date(newSelectedTime);
+    setSelectedTime(date.toISOString());
+    console.log(newSelectedTime);
+  }
+  
+  
 
   return (
       <section className={classes.reservationPlatform}>
@@ -70,7 +88,17 @@ function ReservationPlatform() {
             />
         )}
         {selectedDate ? new Date(selectedDate).toLocaleDateString('de-DE') : 'No date selected'}
-        <CustomTimePicker availableTimes={Array.isArray(GetAvailabilityByDayQuery.data) ? GetAvailabilityByDayQuery.data : []} onSelectTime={setSelectedTime} />
+          <CustomTimePicker 
+              availableTimes={Array.isArray(GetAvailabilityByDayQuery.data) ? GetAvailabilityByDayQuery.data : []} 
+              onSelectTime={(newSelectedTime) => handleTimeSelect(newSelectedTime)} />
+        {!(selectedDate && selectedTime) ? 'No time selected' : new Date(selectedTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
+        
+        { selectedDate && selectedTime && (
+            <>
+              <h2>{selectedTime}</h2>
+              <button>Reservieren</button>
+            </>
+        )}
       </section>
   );
 }
