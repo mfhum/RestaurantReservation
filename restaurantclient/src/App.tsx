@@ -3,7 +3,7 @@ import OwnerOverview from "./pages/Owner/Overview/OwnerOverview.tsx";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import ReservationPlatform from "./pages/ReservationPlatform/ReservationPlatform.tsx";
 import OwnerSetup from "./pages/Owner/Setup/OwnerSetup.tsx";
-import Tables from "./components/CreateTables/tables.tsx";
+import Tables from "./components/CreateTables/tablesForm.tsx";
 function App() {
   return (
     <Router>

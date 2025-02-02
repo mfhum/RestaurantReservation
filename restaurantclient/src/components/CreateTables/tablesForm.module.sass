@@ -1,0 +1,49 @@
+.tableSetup
+  display: flex
+  align-items: center
+  width: 100%
+  margin-top: 20px
+  padding: 20px
+  border-radius: 5px
+  
+.tableCreation
+  width: 60%
+  height: 100%
+  form
+    label
+      p
+        margin-top: 25px
+  
+.tableList
+  width: 40%
+  display: flex
+  flex-direction: column
+  gap: 10px
+  padding: 10px
+  height: 100%
+  
+input
+  width: calc(60% - 1.6rem - 4px)
+  padding: 0.8rem
+  border: 2px solid #1c1c1c
+  border-radius: 8px
+  font-size: 1rem
+  transition: border-color 0.3s, box-shadow 0.3s
+
+  &:focus
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.2)
+    outline: none
+    
+button
+  margin-top: 36px
+  background: #000000
+  font-size: 1rem
+  padding: 0.8rem
+  border: none
+  border-radius: 8px
+  cursor: pointer
+  transition: background 0.3s ease-in-out
+  width: 60%
+  animation: fadeIn 0.5s ease-in-out 0.3s forwards
+  p
+    color: white

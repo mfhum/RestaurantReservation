@@ -1,0 +1,49 @@
+.restaurantFormContainer 
+  height: 60%
+  
+  
+.restaurantForm
+    display: flex
+    flex-direction: column
+    gap: 16px
+    max-width: 400px
+    justify-content: center
+    align-items: center
+  
+.restaurantInput
+  width: calc(100% - 1.6rem - 4px)
+  padding: 0.8rem
+  border: 2px solid #1c1c1c
+  border-radius: 8px
+  font-size: 1rem
+  transition: border-color 0.3s, box-shadow 0.3s
+
+  &:focus
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.2)
+    outline: none
+    
+.restaurantSubmit 
+  background: #000000
+  color: white
+  font-size: 1rem
+  padding: 0.8rem
+  border: none
+  border-radius: 8px
+  cursor: pointer
+  transition: background 0.3s ease-in-out
+
+  &:hover
+    background: #111315
+
+  &:disabled 
+    background: #6c757d
+    cursor: not-allowed
+    
+.loadingText
+  animation: fadeIn 0.5s ease-in-out 0.3s forwards
+
+@keyframes fadeIn
+  0% 
+    opacity: 0
+  100% 
+    opacity: 1

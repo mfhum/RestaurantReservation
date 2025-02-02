@@ -102,7 +102,6 @@ function OpeningHoursForm() {
       return;
     }
     CreateOpeningHours.mutate(newOpeningHours);
-    alert('Opening Hours Submitted');
     event.currentTarget.reset();
     setWeekday(days[0]);
   };
@@ -121,62 +120,64 @@ function OpeningHoursForm() {
               <li className={classes.weekDayFormList}>
                 {days.slice(1).map((day, index) => (
                     <ul key={index} onClick={() => handleDayClick(day)}>
-                      {['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'][index]}
+                      <h3>{['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'][index]}</h3>
                       <div className={dayMap[day] ? classes.open : classes.closed}></div>
                     </ul>
                 ))}
               </li>
-              {weekday !== days[0] && (
-                  <>
-                    <h2>{['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'][weekday - 1]}</h2>
-                    <form className={classes.openingHoursForm} onSubmit={handleOpeningHoursFormSubmit}>
-                      <label htmlFor="openingTime">Opening Time*</label>
-                      <input
-                          type="text"
-                          id="openingTime"
-                          name="openingTime"
-                          value={formValues.openingTime}
-                          pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
-                          placeholder="HH:mm"
-                          onChange={handleInputChange}
-                          required
-                      />
-                      <label htmlFor="breakStartTime">Break Start Time</label>
-                      <input
-                          type="text"
-                          id="breakStartTime"
-                          name="breakStartTime"
-                          value={formValues.breakStartTime}
-                          pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
-                          placeholder="HH:mm"
-                          onChange={handleInputChange}
-                      />
-                      <label htmlFor="breakEndTime">Break End Time</label>
-                      <input
-                          type="text"
-                          id="breakEndTime"
-                          name="breakEndTime"
-                          value={formValues.breakEndTime}
-                          pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
-                          placeholder="HH:mm"
-                          onChange={handleInputChange}
-                      />
-                      <label htmlFor="closingTime">Closing Time*</label>
-                      <input
-                          type="text"
-                          id="closingTime"
-                          name="closingTime"
-                          value={formValues.closingTime}
-                          pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
-                          placeholder="HH:mm"
-                          onChange={handleInputChange}
-                          required
-                      />
-                      <br />
-                      <button type="submit">Submit</button>
-                    </form>
-                  </>
-              )}
+              <div className={classes.openingHoursFormContainer}>
+                {weekday !== days[0] && (
+                    <>
+                      <h2>{['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'][weekday - 1]}</h2>
+                      <form className={classes.openingHoursForm} onSubmit={handleOpeningHoursFormSubmit}>
+                        <label htmlFor="openingTime"><p>Opening Time*</p></label>
+                        <input
+                            type="text"
+                            id="openingTime"
+                            name="openingTime"
+                            value={formValues.openingTime}
+                            pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
+                            placeholder="HH:mm"
+                            onChange={handleInputChange}
+                            required
+                        />
+                        <label htmlFor="breakStartTime"><p>Break Start Time</p></label>
+                        <input
+                            type="text"
+                            id="breakStartTime"
+                            name="breakStartTime"
+                            value={formValues.breakStartTime}
+                            pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
+                            placeholder="HH:mm"
+                            onChange={handleInputChange}
+                        />
+                        <label htmlFor="breakEndTime"><p>Break End Time</p></label>
+                        <input
+                            type="text"
+                            id="breakEndTime"
+                            name="breakEndTime"
+                            value={formValues.breakEndTime}
+                            pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
+                            placeholder="HH:mm"
+                            onChange={handleInputChange}
+                        />
+                        <label htmlFor="closingTime"><p>Closing Time*</p></label>
+                        <input
+                            type="text"
+                            id="closingTime"
+                            name="closingTime"
+                            value={formValues.closingTime}
+                            pattern="^([01]?\d|2[0-3]):([0-5]\d)$"
+                            placeholder="HH:mm"
+                            onChange={handleInputChange}
+                            required
+                        />
+                        <button className={classes.submitButton} type="submit"><h3>Erstellen</h3></button>
+                      </form>
+                    </>
+                )}
+              </div>
+              
             </>
         )}
       </>

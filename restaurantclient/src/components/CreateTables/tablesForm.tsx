@@ -1,10 +1,10 @@
-import classes from './tables.module.sass';
+import classes from './tablesForm.module.sass';
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {createTable, fetchGetAllTables} from "../../helpers/api/tableApi.ts";
 import {TableObject} from "../../helpers/models/table.ts";
 import React from "react";
 
-function Tables() {
+function TablesForm() {
     const GetAllTablesQuery= useQuery({
         queryKey: ['GetAllTablesQuery'],
         queryFn: fetchGetAllTables,
@@ -25,41 +25,39 @@ function Tables() {
             tableNumber: event.currentTarget.tableNumber.value,
         };
         CreateTableQuery.mutate(newTable);
-        alert('Opening Hours Submitted');
         event.currentTarget.reset();
     }
 
     return (
         <>
             <section className={classes.tableSetup}>
-                
-                <div className={classes.tableSetup}>
-                    <h2>All Tables:</h2>
-                    {GetAllTablesQuery.data?.map((table: TableObject) => (
-                        <div className={classes.reservationInfo} key={table.tableId}>
-                            Table number: {table.tableNumber}<br/>
-                            Amount of guests: {table.seats}<br/>
-                        </div>
-                    ))}
-                    <div>{GetAllTablesQuery.isFetching ? 'Updating...' : ''}</div>
-                </div>
                 <div className={classes.tableCreation}>
-                    <h2>Create a new table:</h2>
+                    <h2>Neuen Tisch erstellen:</h2>
                     <form onSubmit={handleCreateTableFormSubmit}>
                         <label>
-                            Table number:
+                            <p>Tischnummer:</p>
                             <input type="number" name="tableNumber" />
                         </label>
                         <label>
-                            Amount of seats:
+                            <p>Anzahl Sitzplätze:</p>
                             <input type="number" name="seats" />
                         </label>
-                        <button type="submit">Create table</button>
+                        <button type="submit"><p>Tisch erstellen</p></button>
                     </form>
+                </div>
+                <div className={classes.tableList}>
+                    <h2>Alle Tische:</h2>
+                    {GetAllTablesQuery.data?.map((table: TableObject) => (
+                        <div className={classes.reservationInfo} key={table.tableId}>
+                            <p>Tischnummer: {table.tableNumber}</p>
+                            <p>Sitzplätze: {table.seats}</p>
+                        </div>
+                    ))}
+                    <div>{GetAllTablesQuery.isFetching ? 'Updating...' : ''}</div>
                 </div>
             </section>
         </>
     )
 }
 
-export default Tables
+export default TablesForm

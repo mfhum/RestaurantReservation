@@ -1,28 +1,70 @@
 .weekDayFormList
   display: flex
-  justify-content: space-between
-  width: 200px
-  margin-bottom: 25px
-  ul
-    border: 1px solid #fff
-    padding: 1rem
+  justify-content: flex-start
+  list-style: none
+  padding: 16px
+  height: 100%
 
+  ul
+    display: flex
+    width: 45px
+    height: 30px
+    border: 3px solid #fff
+    border-radius: 5px
+    padding: 15px
+    cursor: pointer
+    margin: 10px
+    &:hover
+      background-color: #fff
+.openingHoursFormContainer
+  width: 80%
+  display: flex
+  flex-direction: column
+  align-items: center
+  h2
+    margin-bottom: 16px
+  
 .openingHoursForm
-  width: 250px
-  border: 1px solid #fff
+  width: 50%
+  border: 3px solid #fff
+  border-radius: 5px
+  padding: 1rem
+  display: flex
+  flex-direction: column
+  gap: 10px
+
   label
     margin-top: 10px
     display: block
-    margin-bottom: 0.5rem
+    font-weight: bold
 
-.open
+  input
+    padding: 5px
+    border: 1px solid #ccc
+    border-radius: 4px
+    font-size: 14px
+
+.open, .closed
   width: 5px
   height: 5px
   border-radius: 20px
+
+.open
   background-color: green
 
 .closed
-  width: 5px
-  height: 5px
-  border-radius: 20px
   background-color: red
+
+.submitButton
+  margin-top: 18px
+  background: #000000
+  font-size: 1rem
+  padding: 0.8rem
+  border: none
+  border-radius: 8px
+  cursor: pointer
+  transition: background 0.3s ease-in-out
+  width: 325px
+  animation: fadeIn 0.5s ease-in-out 0.3s forwards
+  h3
+    color: white
