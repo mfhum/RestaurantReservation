@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import CustomDatePicker from "../../components/FormObjects/CustomDatePicker.tsx";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import { getAvailabilityForDay, getAvailabilityForMonth } from "../../helpers/api/availabilityApi.ts";
@@ -53,6 +53,19 @@ function ReservationPlatform() {
     console.log(newSelectedTime);
   }
   
+  function handleReservation() {
+    const newReservation: ReservationObject = {
+      guests: guestCount,
+      reservationDate: selectedTime,
+    }
+   
+    CreateReservation.mutate(newReservation);
+    alert('Reservation Submitted');
+    setGuestCount(2);
+    setReservationTime(new Date().toISOString());
+    setSelectedDate('');
+    setSelectedTime('');
+  };
   
 
   return (
@@ -96,7 +109,7 @@ function ReservationPlatform() {
         { selectedDate && selectedTime && (
             <>
               <h2>{selectedTime}</h2>
-              <button>Reservieren</button>
+              <button onClick={() => handleReservation()}>Reservieren</button>
             </>
         )}
       </section>

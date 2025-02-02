@@ -15,7 +15,7 @@ export const createReservation = async (
     reservation: ReservationObject
 ): Promise<ReservationObject> => {
   try {
-    const response = await axios.post(`${BASE_URL}/Create`, reservation);
+    const response = await axios.post(`${BASE_URL}/CreateReservationByGuestNumber`, reservation);
     return response.data as ReservationObject;
   } catch (error) {
     if (error instanceof Error) {

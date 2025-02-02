@@ -77,8 +77,7 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
                 continue;
             }
             // check if restaurant is closed on that day
-            var openingHours = await context.OpeningHours.FirstOrDefaultAsync(o =>
-                o.RestaurantId == new Guid("0194c26e-7533-735c-bd10-264f3c3752fb") && o.Day == (DayOfWeek)new DateTime(reservationTime.Year, reservationTime.Month, dayOfMonth).DayOfWeek);
+            var openingHours = await context.OpeningHours.FirstOrDefaultAsync(o => o.Day == (DayOfWeek)new DateTime(reservationTime.Year, reservationTime.Month, dayOfMonth).DayOfWeek);
             if (openingHours == null)
             {
                 availabilityForMonth.Add(new AvailabilityForDay()

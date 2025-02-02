@@ -9,7 +9,6 @@ public class RequestOpeningHoursDto
   public TimeSpan? BreakStartTime { get; set; }
   public TimeSpan? BreakEndTime { get; set; }
   public required TimeSpan ClosingTime { get; set; }
-  public required Guid RestaurantId { get; set; }
 }
 
 public class RequestCreateOpeningHoursDto : RequestOpeningHoursDto;

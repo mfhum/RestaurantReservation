@@ -17,9 +17,5 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
       .HasOne(r => r.Table)
       .WithMany(t => t.Reservations)
       .HasForeignKey(r => r.TableId);
-    modelBuilder.Entity<OpeningHours>()
-      .HasOne(o => o.Restaurant)
-      .WithMany(r => r.OpeningHours)
-      .HasForeignKey(o => o.RestaurantId);
   }
 }

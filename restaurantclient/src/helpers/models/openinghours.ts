@@ -5,5 +5,4 @@ export interface OpeningHoursObject {
   breakStartTime?: string;
   breakEndTime?: string;
   closingTime: string;
-  restaurantId: string;
 }

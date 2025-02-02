@@ -12,7 +12,7 @@ public class OpeningHoursRepository(DataContext context) : BaseRepository<Openin
     public new async Task<OpeningHours?> CreateAsync(OpeningHours newOpeningHours)
     {
         var existingOpeningHours = await Context.OpeningHours
-            .FirstOrDefaultAsync(o => o.RestaurantId == newOpeningHours.RestaurantId && o.Day == newOpeningHours.Day);
+            .FirstOrDefaultAsync(o => o.Day == newOpeningHours.Day);
 
         if (existingOpeningHours != null)
         {
@@ -20,11 +20,7 @@ public class OpeningHoursRepository(DataContext context) : BaseRepository<Openin
         }
 
         await ValidateOpeningHours(newOpeningHours);
-        
-        var restaurant = await Context.Restaurants.FindAsync(newOpeningHours.RestaurantId)
-            ?? throw new ArgumentException("Restaurant not found");
 
-        newOpeningHours.Restaurant = restaurant;
         await Context.OpeningHours.AddAsync(newOpeningHours);
         await Context.SaveChangesAsync();
         return newOpeningHours;
@@ -35,7 +31,7 @@ public class OpeningHoursRepository(DataContext context) : BaseRepository<Openin
         await ValidateOpeningHours(updateOpeningHours);
 
         var existingOpeningHours = await Context.OpeningHours
-            .FirstOrDefaultAsync(o => o.RestaurantId == updateOpeningHours.RestaurantId && o.Day == updateOpeningHours.Day)
+            .FirstOrDefaultAsync(o => o.Day == updateOpeningHours.Day)
             ?? throw new ArgumentException("Opening hours not found");
 
         existingOpeningHours.OpeningTime = updateOpeningHours.OpeningTime;
@@ -55,12 +51,6 @@ public class OpeningHoursRepository(DataContext context) : BaseRepository<Openin
     
     private async Task ValidateOpeningHours(OpeningHours openingHours)
     {
-        var restaurantExists = await Context.Restaurants.AnyAsync(r => r.RestaurantId == openingHours.RestaurantId);
-        if (!restaurantExists)
-        {
-            throw new ArgumentException("Restaurant not found");
-        }
-
         // Adjust closing time if it goes past midnight
         if (openingHours.ClosingTime < openingHours.OpeningTime)
         {

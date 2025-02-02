@@ -8,7 +8,6 @@ public class ResponseOpeningHoursDto
   public TimeSpan? BreakStartTime { get; set; }
   public TimeSpan? BreakEndTime { get; set; }
   public required TimeSpan ClosingTime { get; set; }
-  public required Guid RestaurantId { get; set; }
 }
 
 public class ResponseGetAllOpeningHoursDto : ResponseOpeningHoursDto;
@@ -21,5 +20,5 @@ public class ResponseUpdateOpeningHoursDto : ResponseOpeningHoursDto;
 
 public class ResponseDeleteOpeningHoursDto
 {
-  public required Guid RestaurantId { get; set; }
+  public required Guid OpeningHoursId { get; set; }
 }
