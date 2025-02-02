@@ -29,3 +29,5 @@ public class ResponseGetReservationsByTableDto : ResponseReservationDto;
 public class ResponseGetReservationsByTimeRangeDto : ResponseReservationDto;
 
 public class ResponseGetReservationsByIdDto : ResponseReservationDto;
+
+public class ResponseCreateReservationByGuestNumberDto : ResponseReservationDto;

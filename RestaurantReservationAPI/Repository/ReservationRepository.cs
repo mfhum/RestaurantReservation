@@ -156,6 +156,82 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
     return updateReservation;
   }
 
+  public async Task<Reservation> CreateReservationByGuestNumber(Reservation newReservation)
+  {
+    var minutes = newReservation.ReservationDate.Minute;
+    if (minutes % 15 != 0)
+    {
+      throw new ArgumentException("Reservation time invalid");
+    }
+    // Check if Restaurant is open
+    var openingHours = await Context.OpeningHours
+      .FirstOrDefaultAsync(o => o.Day == newReservation.ReservationDate.DayOfWeek);
+    if (openingHours == null)
+    {
+      throw new ArgumentException("Restaurant is closed on this day");
+    }
+    // Check if Reservation is within opening hours
+    var openingTime = new DateTime(newReservation.ReservationDate.Year, newReservation.ReservationDate.Month,
+      newReservation.ReservationDate.Day, openingHours.OpeningTime.Hours, openingHours.OpeningTime.Minutes, 0);
+    if (openingHours is { BreakStartTime: not null, BreakEndTime: not null })
+    {
+      var breakStartTime = new DateTime(newReservation.ReservationDate.Year, newReservation.ReservationDate.Month,
+        newReservation.ReservationDate.Day, openingHours.BreakStartTime.Value.Hours, openingHours.BreakStartTime.Value.Minutes, 0);
+      var breakEndTime = new DateTime(newReservation.ReservationDate.Year, newReservation.ReservationDate.Month,
+        newReservation.ReservationDate.Day, openingHours.BreakEndTime.Value.Hours, openingHours.BreakEndTime.Value.Minutes, 0);
+      if (newReservation.ReservationDate >= breakStartTime && newReservation.ReservationDate <= breakEndTime)
+      {
+        throw new ArgumentException("Reservation is during break time");
+      }
+    }
+    // Closing time can be after Midnight
+    if (openingHours.ClosingTime.Days == 1)
+    {
+      newReservation.ReservationDate = newReservation.ReservationDate.AddDays(1);
+    }
+    var closingTime = new DateTime(newReservation.ReservationDate.Year, newReservation.ReservationDate.Month,
+      newReservation.ReservationDate.Day + openingHours.ClosingTime.Days, openingHours.ClosingTime.Hours, openingHours.ClosingTime.Minutes, 0);
+    if (newReservation.ReservationDate < openingTime || newReservation.ReservationDate > closingTime)
+    {
+      throw new ArgumentException("Reservation is outside of opening hours");
+    }
+    // Only make Reservations into future
+    if (newReservation.ReservationDate < DateTime.Now)
+    {
+      throw new ArgumentException("Reservation date in the past");
+    }
+    // Find available table for the reservation and amount of people
+    var availableTables = await Context.Tables.Where(t => t.Seats >= newReservation.Guests && t.Seats <= newReservation.Guests + 2).ToListAsync();
+    if (!availableTables.Any())
+    {
+      throw new ArgumentException("No available table for the amount of guests");
+    }
+    // Find the first available table
+    var reservationEndTime = newReservation.ReservationDate.AddMinutes(90);
+    foreach (var table in availableTables)
+    {
+      // Check if Table is already reserved
+
+      var conflictingReservations = await Context.Reservations
+        .Where(r => r.TableId == table.TableId &&
+                    r.ReservationDate < reservationEndTime &&
+                    r.ReservationDate.AddMinutes(90) > newReservation.ReservationDate)
+        .ToListAsync();
+      if (conflictingReservations.Count == 0)
+      {
+        newReservation.TableId = table.TableId;
+        break;
+      }
+    }
+
+    if (newReservation.TableId == Guid.Empty)
+    {
+      throw new ArgumentException("Table is already reserved for the selected time.");
+    }
+    await Context.Reservations.AddAsync(newReservation);
+    await Context.SaveChangesAsync();
+    return newReservation;
+  }
   public async Task<ICollection<Reservation>> GetReservationsByTimeRange(DateTime startTime, DateTime endTime)
   {
     var allReservations = await GetAllAsync();
@@ -175,4 +251,6 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
     var reservations = allReservations.Where(r => r.ReservationDate >= startTime && r.ReservationDate <= endTime && r.Guests == numberOfGuests).ToList();
     return reservations;
   }
+
+ 
 }

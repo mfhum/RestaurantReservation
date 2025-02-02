@@ -26,5 +26,15 @@ public class ReservationController(IReservationRepository reservationRepository,
     var reservationsDto = _mapper.Map<List<ResponseGetReservationsByTableDto>>(reservations);
     return Ok(reservationsDto);
   }
+  
+  [HttpPost("CreateReservationByGuestNumber")]
+  public async Task<ActionResult<ResponseCreateReservationByGuestNumberDto>> CreateReservationByGuestNumber([FromBody] RequestCreateReservationByGuestNumberDto requestCreateReservationByGuestNumberDto)
+  {
+    var reservation = _mapper.Map<Reservation>(requestCreateReservationByGuestNumberDto);
+    var createdReservation = await reservationRepository.CreateReservationByGuestNumber(reservation);
+    var createdReservationDto = _mapper.Map<ResponseCreateReservationByGuestNumberDto>(createdReservation);
+    return Ok(createdReservationDto);
+  }
+  
 
 }

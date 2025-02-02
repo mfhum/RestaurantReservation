@@ -51,3 +51,11 @@ public class RequestGetReservationsByIdDto
 {
   public required Guid TableId { get; set; }
 }
+
+public class RequestCreateReservationByGuestNumberDto
+{
+  public required int Guests { get; set; }
+  public required DateTime ReservationDate { get; set; }
+  public string? Notes { get; set; } = string.Empty;
+
+}
