@@ -11,6 +11,7 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
 
     public new async Task<Reservation?> CreateAsync(Reservation newReservation)
     {
+        newReservation.ReservationDate = EnsureUtc(newReservation.ReservationDate);
         await ValidateReservation(newReservation);
         await Context.Reservations.AddAsync(newReservation);
         await Context.SaveChangesAsync();
@@ -19,6 +20,7 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
 
     public new async Task<Reservation?> UpdateEntityByIdAsync(Reservation updateReservation)
     {
+        updateReservation.ReservationDate = EnsureUtc(updateReservation.ReservationDate);
         await ValidateReservation(updateReservation, updateReservation.ReservationId);
         Context.Reservations.Update(updateReservation);
         await Context.SaveChangesAsync();
@@ -27,6 +29,7 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
 
     public async Task<Reservation> CreateReservationByGuestNumber(Reservation newReservation)
     {
+        newReservation.ReservationDate = EnsureUtc(newReservation.ReservationDate);
         await ValidateReservationTimeAndOpeningHours(newReservation);
         
         var availableTables = await Context.Tables
@@ -62,6 +65,9 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
 
     public async Task<ICollection<Reservation>> GetReservationsByTimeRange(DateTime startTime, DateTime endTime)
     {
+        startTime = EnsureUtc(startTime);
+        endTime = EnsureUtc(endTime);
+
         return await Context.Reservations
             .Where(r => r.ReservationDate >= startTime && r.ReservationDate <= endTime)
             .ToListAsync();
@@ -76,6 +82,9 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
 
     public async Task<ICollection<Reservation>> GetReservationsByTimeRangeAndTableSize(DateTime startTime, DateTime endTime, int numberOfGuests)
     {
+        startTime = EnsureUtc(startTime);
+        endTime = EnsureUtc(endTime);
+
         return await Context.Reservations
             .Where(r => r.ReservationDate >= startTime && r.ReservationDate <= endTime && r.Guests == numberOfGuests)
             .ToListAsync();
@@ -87,6 +96,7 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
 
     private async Task ValidateReservation(Reservation reservation, Guid? updatingReservationId = null)
     {
+        reservation.ReservationDate = EnsureUtc(reservation.ReservationDate);
         await ValidateReservationTimeAndOpeningHours(reservation);
 
         var table = await Context.Tables.FindAsync(reservation.TableId)
@@ -109,7 +119,9 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
 
     private async Task ValidateReservationTimeAndOpeningHours(Reservation reservation)
     {
-        if (reservation.ReservationDate < DateTime.Now)
+        reservation.ReservationDate = EnsureUtc(reservation.ReservationDate);
+
+        if (reservation.ReservationDate < DateTime.UtcNow)
             throw new ArgumentException("Reservation date in the past");
 
         if (reservation.ReservationDate.Minute % 15 != 0)
@@ -119,26 +131,26 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
             .FirstOrDefaultAsync(o => o.Day == reservation.ReservationDate.DayOfWeek)
             ?? throw new ArgumentException("Restaurant is closed on this day");
 
-        var openingTime = new DateTime(
+        var openingTime = EnsureUtc(new DateTime(
             reservation.ReservationDate.Year, reservation.ReservationDate.Month, reservation.ReservationDate.Day, 
-            openingHours.OpeningTime.Hours, openingHours.OpeningTime.Minutes, 0);
+            openingHours.OpeningTime.Hours, openingHours.OpeningTime.Minutes, 0));
 
-        var closingTime = new DateTime(
+        var closingTime = EnsureUtc(new DateTime(
             reservation.ReservationDate.Year, reservation.ReservationDate.Month, reservation.ReservationDate.Day,
-            openingHours.ClosingTime.Hours, openingHours.ClosingTime.Minutes, 0);
+            openingHours.ClosingTime.Hours, openingHours.ClosingTime.Minutes, 0));
 
         if (openingHours.ClosingTime.Days == 1)
             closingTime = closingTime.AddDays(1);
 
         if (openingHours.BreakStartTime != null && openingHours.BreakEndTime != null)
         {
-            var breakStartTime = new DateTime(
+            var breakStartTime = EnsureUtc(new DateTime(
                 reservation.ReservationDate.Year, reservation.ReservationDate.Month, reservation.ReservationDate.Day,
-                openingHours.BreakStartTime.Value.Hours, openingHours.BreakStartTime.Value.Minutes, 0);
+                openingHours.BreakStartTime.Value.Hours, openingHours.BreakStartTime.Value.Minutes, 0));
 
-            var breakEndTime = new DateTime(
+            var breakEndTime = EnsureUtc(new DateTime(
                 reservation.ReservationDate.Year, reservation.ReservationDate.Month, reservation.ReservationDate.Day,
-                openingHours.BreakEndTime.Value.Hours, openingHours.BreakEndTime.Value.Minutes, 0);
+                openingHours.BreakEndTime.Value.Hours, openingHours.BreakEndTime.Value.Minutes, 0));
 
             if (reservation.ReservationDate >= breakStartTime && reservation.ReservationDate <= breakEndTime)
                 throw new ArgumentException("Reservation is during break time");
@@ -146,5 +158,10 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
 
         if (reservation.ReservationDate < openingTime || reservation.ReservationDate > closingTime)
             throw new ArgumentException("Reservation is outside of opening hours");
+    }
+
+    private static DateTime EnsureUtc(DateTime dateTime)
+    {
+        return dateTime.Kind == DateTimeKind.Unspecified ? DateTime.SpecifyKind(dateTime, DateTimeKind.Utc) : dateTime.ToUniversalTime();
     }
 }
