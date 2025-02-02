@@ -1,5 +1,5 @@
 export interface TableObject {
-  tableId: string;
+  tableId?: string;
   tableNumber: number;
   seats: number;
 }

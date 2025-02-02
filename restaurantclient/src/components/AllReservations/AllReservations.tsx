@@ -20,8 +20,8 @@ function AllReservations() {
       {AllReservationsQuery.data.map((reservation: ReservationObject) => (
         <div className={classes.reservationInfo} key={reservation.reservationId}>
           Amount of guests: {reservation.guests}<br/>
-          Date of reservation: {formatDate(reservation.reservationDate)}<br/>
-          Time of reservation: {formatTime(reservation.reservationDate)}<br/>
+          Date of reservation: {formatDate(new Date(reservation.reservationDate))}<br/>
+          Time of reservation: {formatTime(new Date(reservation.reservationDate))}<br/>
           Notes: {reservation.notes == 'string' ? 'no notes' : reservation.notes}<br/>
         </div>
       ))}
