@@ -40,7 +40,7 @@ function CustomTimePicker({ availableTimes, onSelectTime }: {
           {isOpen && (
               <div className={classes.timePickerDropdown}>
                 {availableTimes.map((time, index) => (
-                    <button className={classes.timePickerDropdownTimeButton} key={index} onClick={() => handleSelectTime(addOneHour(time.reservationTime))}>
+                    <button disabled={time.tableCount==0} className={classes.timePickerDropdownTimeButton} key={index} onClick={() => handleSelectTime(addOneHour(time.reservationTime))}>
                       <p>
                         {addOneHour(time.reservationTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
                       </p>
