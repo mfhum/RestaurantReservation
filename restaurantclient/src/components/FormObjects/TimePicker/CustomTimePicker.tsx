@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import classes from "./CustomTimePicker.module.sass";
-import { AvailabilityByDay } from "../../helpers/models/availability.ts";
+import { AvailabilityByDay } from "../../../api/models/availability.ts";
 
 function CustomTimePicker({ availableTimes, onSelectTime }: {
   availableTimes: AvailabilityByDay[]; // Array of time strings (e.g., ["13:00", "13:15", ...])

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import CustomDatePicker from "../../components/FormObjects/CustomDatePicker.tsx";
+import CustomDatePicker from "../../../components/FormObjects/DatePicker/CustomDatePicker.tsx";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import { getAvailabilityForDay, getAvailabilityForMonth } from "../../helpers/api/availabilityApi.ts";
+import { getAvailabilityForDay, getAvailabilityForMonth } from "../../../api/requests/availabilityApi.ts";
 import classes from "./ReservationPlatform.module.sass";
-import CustomTimePicker from "../../components/FormObjects/CustomTimePicker.tsx";
-import {ReservationObject} from "../../helpers/models/reservation.ts";
-import {createReservation} from "../../helpers/api/reservationsApi.ts";
+import CustomTimePicker from "../../../components/FormObjects/TimePicker/CustomTimePicker.tsx";
+import {ReservationObject} from "../../../api/models/reservation.ts";
+import {createReservation} from "../../../api/requests/reservationsApi.ts";
 
 function ReservationPlatform() {
   const [guestCount, setGuestCount] = useState(2);

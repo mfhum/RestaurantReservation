@@ -1,8 +1,8 @@
 import classes from './OpeningHoursForm.module.sass';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createOpeningHours, getAllOpeningHours } from '../../helpers/api/openingHoursApi.ts';
-import { OpeningHoursObject } from '../../helpers/models/openinghours.ts';
+import { createOpeningHours, getAllOpeningHours } from '../../../api/requests/openingHoursApi.ts';
+import { OpeningHoursObject } from '../../../api/models/openinghours.ts';
 
 function OpeningHoursForm() {
   const days = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -15,6 +15,7 @@ function OpeningHoursForm() {
     breakEndTime: '',
     closingTime: ''
   });
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const timeRegex = /^([01]?\d|2[0-3]):([0-5]\d)$/; // Allow 0-23 hours and 00-59 minutes
 
   const GetAllOpeningHours = useQuery({
@@ -27,6 +28,8 @@ function OpeningHoursForm() {
     mutationFn: createOpeningHours,
     onSuccess: () => {
       GetAllOpeningHours.refetch();
+      setSuccessMessage('Änderungen erfolgreich gespeichert.');
+      setTimeout(() => setSuccessMessage(null), 3000); // Hide message after 3 seconds
     },
   });
 
@@ -176,9 +179,11 @@ function OpeningHoursForm() {
                         <button className={classes.submitButton} type="submit"><h3>Erstellen</h3></button>
                       </form>
                     </>
+                    
                 )}
+                {successMessage && <p className={classes.successMessage}>{successMessage}</p>}
               </div>
-              
+
             </>
         )}
       </>

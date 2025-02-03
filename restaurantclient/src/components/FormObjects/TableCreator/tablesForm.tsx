@@ -1,7 +1,7 @@
 import classes from './tablesForm.module.sass';
 import {useMutation, useQuery} from "@tanstack/react-query";
-import {createTable, fetchGetAllTables} from "../../helpers/api/tableApi.ts";
-import {TableObject} from "../../helpers/models/table.ts";
+import {createTable, fetchGetAllTables} from "../../../api/requests/tableApi.ts";
+import {TableObject} from "../../../api/models/table.ts";
 import React from "react";
 
 function TablesForm() {
@@ -22,7 +22,7 @@ function TablesForm() {
         acc[table.seats] = (acc[table.seats] || 0) + 1;
         return acc;
     }, {} as Record<number, number>)
-    console.log(tableGroups);
+
     const handleCreateTableFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const newTable: TableObject = {
@@ -52,12 +52,15 @@ function TablesForm() {
                 </div>
                 <div className={classes.tableList}>
                     <h2>Alle Tische:</h2>
-                    {tableGroups &&
+                    {tableGroups && Object.keys(tableGroups).length > 0 ? (
                         Object.entries(tableGroups).map(([seats, count]) => (
                             <p key={seats}>
                                 {count}x {seats}-Personen Tisch{count > 1 ? 'e' : ''}
                             </p>
-                        ))}
+                        ))
+                    ) : (
+                        <p>Bisher wurden keine Tische erstellt!</p>
+                    )}
                     <div>{GetAllTablesQuery.isFetching ? 'Updating...' : ''}</div>
                 </div>
             </section>

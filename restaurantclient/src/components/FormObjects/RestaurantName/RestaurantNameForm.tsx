@@ -1,7 +1,7 @@
 import React from "react";
-import { RestaurantObject } from "../../helpers/models/restaurant.ts";
+import { RestaurantObject } from "../../../api/models/restaurant.ts";
 import { useMutation } from "@tanstack/react-query";
-import { createRestaurant } from "../../helpers/api/restaurantApi.ts";
+import { createRestaurant } from "../../../api/requests/restaurantApi.ts";
 import classes from "./RestaurantNameForm.module.sass";
 
 function RestaurantNameForm({onComplete}: {onComplete: () => void}) {

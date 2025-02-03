@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AvailabilityByMonth } from "../../helpers/models/availability";
+import { AvailabilityByMonth } from "../../../api/models/availability.ts";
 import classes from "./CustomDatePicker.module.sass";
 
 function CustomDatePicker({

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import classes from "./OwnerSetup.module.sass";
-import RestaurantNameForm from "../../../components/OwnerSetup/RestaurantNameForm.tsx";
-import OpeningHoursForm from "../../../components/OwnerSetup/OpeningHoursForm.tsx";
-import Tables from "../../../components/CreateTables/tablesForm.tsx"; // Import CSS Module as 'classes'
+import RestaurantNameForm from "../../../components/FormObjects/RestaurantName/RestaurantNameForm.tsx";
+import OpeningHoursForm from "../../../components/FormObjects/OpeningHours/OpeningHoursForm.tsx";
+import Tables from "../../../components/FormObjects/TableCreator/tablesForm.tsx"; // Import CSS Module as 'classes'
 
 const OwnerSetup = () => {
     const [restaurantFormDone, setRestaurantFormDone] = useState(false);
@@ -17,7 +17,7 @@ const OwnerSetup = () => {
 
     return (
         <div className={classes.ownerSetup}>
-            <h1 className={classes.title}>Restaurant Reservation Tool</h1>
+            <h1 className={classes.title}>Restaurant SetupTool</h1>
             {tablesFormDone ? <h2 className={classes.subtitle}>Einrichtung abgeschlossen!</h2> : <h2 className={classes.subtitle}>Lass uns damit beginnen, dein Restaurant einzurichten.</h2>}
             {!tablesFormDone ? (
                 <>
