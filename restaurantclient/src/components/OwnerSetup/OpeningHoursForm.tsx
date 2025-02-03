@@ -108,7 +108,8 @@ function OpeningHoursForm() {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
+    const formattedValue = value.length === 4 && !value.includes(':') ? `${value.slice(0, 2)}:${value.slice(2)}` : value;
+    setFormValues({ ...formValues, [name]: formattedValue });
   };
 
   return (

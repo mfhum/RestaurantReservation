@@ -18,6 +18,11 @@ function TablesForm() {
         },
     });
 
+    const tableGroups = GetAllTablesQuery.data?.reduce((acc, table: TableObject) => {
+        acc[table.seats] = (acc[table.seats] || 0) + 1;
+        return acc;
+    }, {} as Record<number, number>)
+    console.log(tableGroups);
     const handleCreateTableFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const newTable: TableObject = {
@@ -47,12 +52,12 @@ function TablesForm() {
                 </div>
                 <div className={classes.tableList}>
                     <h2>Alle Tische:</h2>
-                    {GetAllTablesQuery.data?.map((table: TableObject) => (
-                        <div className={classes.reservationInfo} key={table.tableId}>
-                            <p>Tischnummer: {table.tableNumber}</p>
-                            <p>Sitzplätze: {table.seats}</p>
-                        </div>
-                    ))}
+                    {tableGroups &&
+                        Object.entries(tableGroups).map(([seats, count]) => (
+                            <p key={seats}>
+                                {count}x {seats}-Personen Tisch{count > 1 ? 'e' : ''}
+                            </p>
+                        ))}
                     <div>{GetAllTablesQuery.isFetching ? 'Updating...' : ''}</div>
                 </div>
             </section>
