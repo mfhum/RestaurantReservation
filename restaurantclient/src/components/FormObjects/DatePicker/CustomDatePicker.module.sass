@@ -1,10 +1,9 @@
 .calendarContainer 
   font-family: Arial, sans-serif
-  background-color: #d16a5a
+  background-color:  #c5eaff
   color: #fff
-  padding: 20px
-  max-width: 400px
-  margin: auto
+  padding: 36px
+  width: auto
   border-radius: 8px
 
 
@@ -28,11 +27,12 @@
   color: #fff
   font-weight: bold
 
+.currentMonth
+  p
+    width: 100px
 
-.currentMonth 
-  font-weight: bold
-
-
+.monthSelector
+  width: 250px
 .calendarGrid 
   display: grid
   grid-template-columns: repeat(7, 1fr)
@@ -45,25 +45,25 @@
 
 
 .day 
-  background-color: #734c42
-  border: 1px solid #5e4037
+  display: flex
+  justify-content: space-around
+  background-color: #ffeded
+  border: 1px solid #000000
   border-radius: 4px
-  color: #fff
+  color: black
   padding: 10px
   margin: 5px
   cursor: pointer
   &:disabled
-    background-color: #272727
-    // Greyed-out color for disabled state
+    background-color: #989898
     color: #4c4c4c
-    // Adjust text color for disabled state
-    cursor: not-allowed // Show a "not allowed" cursor when hovering over a disabled button
+    cursor: not-allowed
   &:hover
-    background-color: #5e4037
+    background-color: #d3d7f4
 
 
 .selectedDay 
-  background-color: #f3b9b0
+  background-color: #7d98d6
 
 
 .emptyDay 
@@ -72,34 +72,39 @@
 
 .selectedDate 
   text-align: center
-  margin-top: 10px
+  margin-top: 32px
 
 .open
   width: 5px
   height: 5px
   border-radius: 20px
   background-color: green
+  border: 1px solid black
 
 .closed
   width: 5px
   height: 5px
   border-radius: 20px
   background-color: red
+  border: 1px solid black
 
 .today
   width: 5px
   height: 5px
   border-radius: 20px
   background-color: yellow
+  border: 1px solid black
 
 .past
   width: 5px
   height: 5px
   border-radius: 20px
   background-color: grey
+  border: 1px solid black
 
 .booked
   width: 5px
   height: 5px
   border-radius: 20px
   background-color: orange
+  border: 1px solid black

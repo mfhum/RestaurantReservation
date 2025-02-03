@@ -16,16 +16,17 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
         var openingHours = await context.OpeningHours.FirstOrDefaultAsync(o => o.Day == reservationTime.DayOfWeek);
         if (openingHours == null) return new List<Availability>();
 
-         var timeSlots = GenerateTimeSlots(
+        var timeSlots = GenerateTimeSlots(
             ParseTime(reservationTime, openingHours.OpeningTime),
             ParseTime(reservationTime, openingHours.ClosingTime),
             openingHours.BreakStartTime.HasValue ? ParseTime(reservationTime, openingHours.BreakStartTime.Value) : null,
             openingHours.BreakEndTime.HasValue ? ParseTime(reservationTime, openingHours.BreakEndTime.Value) : null
         );
 
-
         // Fetch all tables and reservations for the relevant time range
-        var allTables = await context.Tables.ToListAsync();
+        var allTables = await context.Tables
+            .Where(t => t.Seats >= numberOfGuests && t.Seats <= numberOfGuests + 2)
+            .ToListAsync();
         var reservations = await reservationRepository.GetReservationsByTimeRange(
             timeSlots.First(),
             timeSlots.Last().AddMinutes(90) // Include overlapping reservations
@@ -38,7 +39,7 @@ public class AvailabilityRepository(DataContext context, IReservationRepository 
                 .Select(r => r.TableId)
                 .ToHashSet()
             let freeTablesCount = allTables
-                .Count(t => t.Seats >= numberOfGuests && !reservedTableIds.Contains(t.TableId))
+                .Count(t => !reservedTableIds.Contains(t.TableId))
             select new Availability
             {
                 ReservationTime = timeSlot,

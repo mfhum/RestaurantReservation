@@ -10,7 +10,6 @@ function CustomTimePicker({ availableTimes, onSelectTime }: {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    console.log(selectedTime);
   }, [selectedTime]);
 
   useEffect(() => {
@@ -23,22 +22,31 @@ function CustomTimePicker({ availableTimes, onSelectTime }: {
     onSelectTime(timeString);
     setIsOpen(false); // Close the dropdown after selecting
   };
+  
+  const addOneHour = (time: string) => {
+    const date = new Date(time);
+    date.setHours(date.getHours() + 1);
+    return date;
+  };
 
-  if (!availableTimes.length) {
-    return <div className={classes.timePicker}>Keine verfügbaren Zeiten</div>
-  } else {
+// Use the helper function to adjust the time
+
+  if (!availableTimes.length && selectedTime != null) {
+    return <div className={classes.timePicker}><p>Keine verfügbaren Zeiten</p>{selectedTime}</div>
+  } else if (availableTimes.length) {
     return (
         <div className={classes.timePicker}>
-          <button onClick={() => setIsOpen(!isOpen)}><h3>{selectedTime ? new Date(selectedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : 'Choose Time'}</h3></button>
+          <button className={`${classes.timePickerButton} ${isOpen ? classes.timePickerButtonOpen : ''}`} onClick={() => setIsOpen(!isOpen)}><h3>{selectedTime ? new Date(selectedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : 'Zeit wählen'}</h3></button>
           {isOpen && (
               <div className={classes.timePickerDropdown}>
                 {availableTimes.map((time, index) => (
-                    <button key={index} onClick={() => handleSelectTime(new Date(time.reservationTime))}>
-                      <h2>
-                        {new Date(time.reservationTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                      </h2>
+                    <button className={classes.timePickerDropdownTimeButton} key={index} onClick={() => handleSelectTime(addOneHour(time.reservationTime))}>
+                      <p>
+                        {addOneHour(time.reservationTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                      </p>
                     </button>
                 ))}
+                {availableTimes.length % 2 !== 0 && <div className={classes.timePickerDropdownTimeDiv} />}
               </div>
           )}
         </div>

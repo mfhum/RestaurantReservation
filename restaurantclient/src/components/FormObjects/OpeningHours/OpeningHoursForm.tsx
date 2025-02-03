@@ -17,7 +17,7 @@ function OpeningHoursForm() {
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const timeRegex = /^([01]?\d|2[0-3]):([0-5]\d)$/; // Allow 0-23 hours and 00-59 minutes
-
+  getAllOpeningHours
   const GetAllOpeningHours = useQuery({
     queryKey: ['GetAllOpeningHours'],
     queryFn: () => getAllOpeningHours(),
@@ -71,27 +71,39 @@ function OpeningHoursForm() {
     const existingData = dayMap[day];
     setFormValues({
       // @ts-expect-error: dayMap is mapped correctly
-      openingTime: formatTime(existingData?.openingTime),
+      openingTime: addOneHour(formatTime(existingData?.openingTime)),
       // @ts-expect-error: dayMap is mapped correctly
-      breakStartTime: formatTime(existingData?.breakStartTime),
+      breakStartTime: addOneHour(formatTime(existingData?.breakStartTime)),
       // @ts-expect-error: dayMap is mapped correctly
-      breakEndTime: formatTime(existingData?.breakEndTime),
+      breakEndTime: addOneHour(formatTime(existingData?.breakEndTime)),
       // @ts-expect-error: dayMap is mapped correctly
-      closingTime: formatTime(existingData?.closingTime)
+      closingTime: addOneHour(formatTime(existingData?.closingTime))
     });
   };
+  const subtractOneHour = (time: string) => {
+    const [hours, minutes] = time.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours - 1, minutes);
+    return date.toTimeString().slice(0, 5);
+  };
+  const addOneHour = (time: string) => {
+    if (!time) return '';
+    const [hours, minutes] = time.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours + 1, minutes);
+    return date.toTimeString().slice(0, 5);
+  };
 
+  
   const handleOpeningHoursFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     const newOpeningHours: OpeningHoursObject = {
       day: weekday,
-      openingTime: formValues.openingTime,
-      breakStartTime: formValues.breakStartTime || undefined,
-      breakEndTime: formValues.breakEndTime || undefined,
-      closingTime: formValues.closingTime
+      openingTime: subtractOneHour(formValues.openingTime),
+      breakStartTime: formValues.breakStartTime ? subtractOneHour(formValues.breakStartTime) : undefined,
+      breakEndTime: formValues.breakEndTime ? subtractOneHour(formValues.breakEndTime) : undefined,
+      closingTime: subtractOneHour(formValues.closingTime)
     };
-
     if (!timeRegex.test(newOpeningHours.openingTime) || !timeRegex.test(newOpeningHours.closingTime)) {
       alert('Please enter a valid opening and closing time in HH:mm format.');
       return;
@@ -179,7 +191,7 @@ function OpeningHoursForm() {
                         <button className={classes.submitButton} type="submit"><h3>Erstellen</h3></button>
                       </form>
                     </>
-                    
+
                 )}
                 {successMessage && <p className={classes.successMessage}>{successMessage}</p>}
               </div>

@@ -94,16 +94,16 @@ function CustomDatePicker({
 
   return (
       <div className={classes.calendarContainer}>
-        <h2 className={classes.calendarTitle}>WÄHLE EIN DATUM AUS</h2>
+        <h2 className={classes.calendarTitle}>Wähle einen Tag aus</h2>
         <div className={classes.calendarHeader}>
           <button onClick={handlePrevMonth} className={classes.navButton} disabled={new Date().getMonth() == currentMonth}>
-            &larr; Vorheriger Monat
+            <p className={classes.monthSelector}>&larr; Vorheriger Monat</p>
           </button>
           <span className={classes.currentMonth}>
-          {months[currentMonth]} {currentYear}
-        </span>
+            <p>{months[currentMonth]} {currentYear}</p>
+          </span>
           <button onClick={handleNextMonth} className={classes.navButton} disabled={new Date().getMonth() + 3 == currentMonth}>
-            Nächster Monat &rarr;
+            <p className={classes.monthSelector}>Nächster Monat  &rarr;</p>
           </button>
         </div>
         <div className={classes.calendarGrid}>
@@ -122,9 +122,12 @@ function CustomDatePicker({
                               ? classes.selectedDay
                               : ""
                       }`}
-                      disabled={availability[date.getDate() - 1]?.state == 0}
+                      disabled={
+                          availability[date.getDate() - 1]?.state == 0 ||
+                          [classes.closed, classes.booked, classes.today].includes(getClassName(availability[date.getDate() - 1]?.state))
+                      }
                   >
-                    {date.getDate()}
+                    <p>{date.getDate()}</p>
                     <div
                         className={getClassName(
                             availability[date.getDate() - 1]?.state

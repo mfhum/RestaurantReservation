@@ -1,62 +1,45 @@
-.timePicker 
-  position: relative
-  width: 200px
-  margin: 20px auto
-  font-family: Arial, sans-serif
+.timePickerButton
+  background-color:  #c5eaff
+  border: 2px solid #000000
+  padding: 0.8rem
+  border-radius: 4px
+  color: #000
+  cursor: pointer
+  font-size: 14px
+  transition: background-color 0.3s
+  width: 300px
+  &:hover
+      background-color: #e6f7ff
+    
+.timePickerButtonOpen
+  border-bottom: none
+  border-bottom-left-radius: 0
+  border-bottom-right-radius: 0
+    
+.timePickerDropdown
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  justify-content: space-evenly
+  margin-top: -3px
+  width: calc(300px - 1.6rem - 4px)
+  border-radius: 4px
+  background-color: #c5eaff
+  padding: 0.8rem
+  border: 2px solid #000000
+  border-top: none
 
-  .dropdownHeader 
-    background-color: #734c42
-    color: #fff
-    padding: 10px
-    border-radius: 4px
-    display: flex
-    justify-content: space-between
-    align-items: center
-    cursor: pointer
-    font-weight: bold
-
-    &:hover 
-      background-color: #5e4037
+.timePickerDropdownTimeButton
+  background-color: transparent
+  border: none
+  padding: 0.8rem
+  cursor: pointer
+  transition: background-color 0.3s
+  width: 40%
+  &:hover
+    background-color: #e6f7ff
   
-
-
-  .dropdownArrow 
-    margin-left: 10px
-
-
-  .dropdownList 
-    margin-top: 5px
-    padding: 0
-    list-style: none
-    border-radius: 4px
-    background-color: #d16a5a
-    max-height: 200px
-    overflow-y: auto
-
-    &::-webkit-scrollbar 
-      width: 6px
+.timePickerDropdownTimeDiv
+  width: 40%
+  height: 20px
   
-
-    &::-webkit-scrollbar-thumb 
-      background-color: #734c42
-      border-radius: 10px
-  
-
-
-  .timeSlot 
-    padding: 10px
-    text-align: center
-    cursor: pointer
-    border-bottom: 1px solid #5e4037
-    color: #fff
-
-    &:hover 
-      background-color: #5e4037
-  
-
-    &.selected 
-      background-color: #f3b9b0
-      color: #734c42
-  
-
-

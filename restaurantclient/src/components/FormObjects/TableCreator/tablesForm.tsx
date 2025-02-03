@@ -47,7 +47,7 @@ function TablesForm() {
                             <p>Anzahl Sitzplätze:</p>
                             <input type="number" name="seats" />
                         </label>
-                        <button type="submit"><p>Tisch erstellen</p></button>
+                        <button className={classes.button} type="submit"><p>Tisch erstellen</p></button>
                     </form>
                 </div>
                 <div className={classes.tableList}>

@@ -82,7 +82,7 @@ const OwnerSetup = () => {
                 <>
                     <h3>Super!</h3>
                     <h3>Das Restaurant ist nun vorbereitet für deine ersten Reservationen.</h3>
-                    <button className={classes.button}><h3>Reservation erstellen</h3></button>
+                    <button className={classes.button}><h3><a href="/reservations">Reservation erstellen</a></h3></button>
                 </>
                 
             )}

@@ -35,28 +35,34 @@ function ReservationPlatform() {
 
   useEffect(() => {
     if (selectedDate) {
-      queryClient.invalidateQueries({ queryKey: ['GetAvailabilityByDay', selectedDate, guestCount] });    }
+      queryClient.invalidateQueries({ queryKey: ['GetAvailabilityByDay', selectedDate, guestCount] });
+    }
   }, [selectedDate, guestCount, queryClient]);
+
+  useEffect(() => {
+    // Reset data when guestCount changes
+    setReservationTime(new Date().toISOString());
+    setSelectedDate('');
+    setSelectedTime('');
+  }, [guestCount]);
 
   function handleDateSelect(newSelectedDate: string) {
     const date = new Date(newSelectedDate);
     date.setHours(date.getHours() + 1); // Add one hour
     setSelectedDate(date.toISOString());
-    console.log(date.toISOString());
   }
-  
+
   function handleTimeSelect(newSelectedTime: string) {
     const date = new Date(newSelectedTime);
     setSelectedTime(date.toISOString());
-    console.log(newSelectedTime);
   }
-  
+
   function handleReservation() {
     const newReservation: ReservationObject = {
       guests: guestCount,
       reservationDate: selectedTime,
     }
-   
+
     CreateReservation.mutate(newReservation);
     alert('Reservation Submitted');
     setGuestCount(2);
@@ -64,29 +70,29 @@ function ReservationPlatform() {
     setSelectedDate('');
     setSelectedTime('');
   };
-  
 
   return (
       <section className={classes.reservationPlatform}>
+        <h1 className={classes.title}>Restaurant Reservation Tool</h1>
         <div>
-          <label htmlFor="person-count">Für wieviele Personen ist die Reservierung?</label>
-          <div>
+          <label htmlFor="person-count"><p>Für wieviele Personen ist die Reservierung?</p></label>
+          <div className={classes.guestCountSelector}>
             <button
+                className={classes.buttonCreasers}
                 id="decrease"
-                className="btn"
                 onClick={() => setGuestCount(guestCount - 1)}
-                disabled={guestCount == 2}
+                disabled={guestCount == 1}
             >
-              −
+              <p>−</p>
             </button>
-            <span id="count" className="count">{guestCount}</span>
+            <span id="count" className="count"><h3>{guestCount} {guestCount === 1 ? "Gast" : "Gäste"}</h3></span>
             <button
+                className={classes.buttonCreasers}
                 id="increase"
-                className="btn"
                 onClick={() => setGuestCount(guestCount + 1)}
                 disabled={guestCount == 10}
             >
-              +
+              <p>+</p>
             </button>
           </div>
         </div>
@@ -98,16 +104,14 @@ function ReservationPlatform() {
                 onDayChange={(newSelectedDate) => handleDateSelect(newSelectedDate)} // Pass the setter function
             />
         )}
-        {selectedDate ? new Date(selectedDate).toLocaleDateString('de-DE') : 'No date selected'}
-          <CustomTimePicker 
-              availableTimes={Array.isArray(GetAvailabilityByDayQuery.data) ? GetAvailabilityByDayQuery.data : []} 
-              onSelectTime={(newSelectedTime) => handleTimeSelect(newSelectedTime)} />
-        {!(selectedDate && selectedTime) ? 'No time selected' : new Date(selectedTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
-        
+        <CustomTimePicker
+            availableTimes={Array.isArray(GetAvailabilityByDayQuery.data) ? GetAvailabilityByDayQuery.data : []}
+            onSelectTime={(newSelectedTime) => handleTimeSelect(newSelectedTime)} />
+
         { selectedDate && selectedTime && (
             <>
-              <h2>{selectedTime}</h2>
-              <button onClick={() => handleReservation()}>Reservieren</button>
+              <h2>Deine Reservation am {new Date(selectedTime).toLocaleDateString('de-DE', { day: 'numeric', month: 'long' })} um {new Date(selectedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })} für {guestCount} {guestCount === 1 ? "Gast" : "Gäste"}</h2>
+              <button className={classes.button} onClick={() => handleReservation()}><p>Reservation abschicken</p></button>
             </>
         )}
       </section>
