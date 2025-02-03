@@ -48,10 +48,13 @@ builder.Services.AddCors(options =>
 {
   options.AddPolicy("AllowFrontend", policy =>
   {
-    policy.WithOrigins("http://localhost:5173") // Dein React-Frontend
-          .AllowAnyMethod()
-          .AllowAnyHeader()
-          .AllowCredentials(); // Falls Auth oder Cookies genutzt werden
+    policy.WithOrigins(
+        "http://localhost:5173", // React Frontend in Development
+        "https://restaurant.marius.li" // Production Frontend
+      )
+      .AllowAnyMethod()
+      .AllowAnyHeader()
+      .AllowCredentials();
   });
 });
 
