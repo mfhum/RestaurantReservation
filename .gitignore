@@ -117,4 +117,10 @@ src/.vs/config/applicationhost.config
 # JetBrains Rider's auto generated files
 .idea/
 RestaurantReservationAPI/secrets.json
+RestaurantReservationAPI/.env
 RestaurantReservationAPI/Migrations/*
+RestaurantReservationAPI/logs/*
+
+restaurantclient/.env.production
+restaurantclient/.env.development
+restaurantclient/logs/*
