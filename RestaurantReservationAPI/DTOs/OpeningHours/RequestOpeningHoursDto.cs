@@ -29,3 +29,8 @@ public class RequestGetOpeningHoursDto
 }
 
 public class RequestGetAllOpeningHoursDto;
+
+public class RequestDeleteOpeningHoursByWeekdayDto
+{
+  public DayOfWeek Weekday { get; set; }
+}

@@ -45,6 +45,22 @@ public class OpeningHoursRepository(DataContext context) : BaseRepository<Openin
         return existingOpeningHours;
     }
 
+    public Task<bool> DeleteByWeekday(DayOfWeek weekday)
+    {
+        var openingHours = Context.OpeningHours
+            .FirstOrDefault(o => o.Day == weekday);
+
+        if (openingHours is null)
+        {
+            return Task.FromResult(false);
+        }
+
+        Context.OpeningHours.Remove(openingHours);
+        Context.SaveChanges();
+
+        return Task.FromResult(true);
+    }
+
     // ==============================
     // Private Helper Method
     // ==============================

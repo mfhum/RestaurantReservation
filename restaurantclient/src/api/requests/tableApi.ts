@@ -2,7 +2,8 @@ import {TableObject} from "../models/table.ts";
 import {ReservationObject} from "../models/reservation.ts";
 import axios from "axios";
 
-const BASE_URL = 'http://localhost:5101/api/Table'; // Replace with your backend URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://restaurant.marius.li:3020";
+const BASE_URL = API_BASE_URL + '/Table'; // Replace with your backend URL
 
 export async function fetchGetAllTables() {
   const response = await fetch(`${BASE_URL}/GetAll`);

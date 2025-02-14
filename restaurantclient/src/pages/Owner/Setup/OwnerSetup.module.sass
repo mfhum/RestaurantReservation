@@ -6,10 +6,12 @@
   align-items: center
   flex-direction: column
   gap: 32px
+  h2
+    text-align: center
 
 
 .formsContainer 
-  width: 50%
+  width: 750px
   height: auto
   background-color: #c5eaff
   border-radius: 25px
@@ -53,6 +55,7 @@
   display: flex    
   flex-direction: column
   align-items: center
+  text-align: center
   
 @keyframes fadeIn 
   0% 
@@ -62,3 +65,13 @@
   100% 
     opacity: 1
     transform: translateY(0)
+    
+@media (max-width: 1000px)
+  .ownerSetup
+    width: 80dvw
+    height: auto
+    margin: 10dvh 10dvw 0
+
+  .formsContainer
+    width: calc(100% - 2*25px)
+    padding: 25px 25px

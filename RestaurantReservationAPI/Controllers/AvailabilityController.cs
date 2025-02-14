@@ -6,7 +6,7 @@ using RestaurantReservationAPI.DTOs.Availability;
 namespace RestaurantReservationAPI.Controllers
 {
   [ApiController]
-  [Route("api/Availability")]
+  [Route("Availability")]
   public class AvailabilityController(IAvailabilityRepository availabilityRepository, IMapper mapper)
     : ControllerBase
   {

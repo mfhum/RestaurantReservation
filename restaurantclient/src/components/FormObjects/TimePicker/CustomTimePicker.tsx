@@ -23,7 +23,7 @@ function CustomTimePicker({ availableTimes, onSelectTime }: {
     setIsOpen(false); // Close the dropdown after selecting
   };
   
-  const addOneHour = (time: string) => {
+  const addOneHour = (time: Date) => {
     const date = new Date(time);
     date.setHours(date.getHours() + 1);
     return date;

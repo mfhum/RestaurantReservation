@@ -7,7 +7,7 @@ using RestaurantReservationAPI.Models;
 namespace RestaurantReservationAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public abstract class BaseController<T, TResponseGetAllDto, TResponseGetDto, TRequestCreateDto, TResponseCreateDto, TRequestUpdateDto,
   TResponseUpdateDto, TRequestDeleteDto>(IBaseRepository<T> repository, IMapper mapper)
   : ControllerBase

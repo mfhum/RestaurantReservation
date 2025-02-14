@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {AvailabilityByDay, AvailabilityByMonth} from "../models/availability.ts";
-
-const BASE_URL = 'http://localhost:5101/api/Availability'; // Replace with your backend URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://restaurant.marius.li:3020";
+const BASE_URL = API_BASE_URL + '/Availability'; // Replace with your backend URL
 
 export const getAvailabilityForDay = async (reservationTime: string, numberOfGuests: number): Promise<AvailabilityByDay> => {
   try {

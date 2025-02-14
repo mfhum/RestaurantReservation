@@ -18,8 +18,7 @@ function ReservationPlatform() {
   const GetAvailabilityForMonthQuery = useQuery({
     queryKey: ['GetAllOpeningHours', reservationTime, guestCount],
     queryFn: () => getAvailabilityForMonth(reservationTime, guestCount),
-    enabled: true,
-    onSettled: () => setIsMonthChanging(false), // Reset month changing state when query settles
+    enabled: true
   });
 
   const GetAvailabilityByDayQuery = useQuery({
@@ -94,7 +93,7 @@ function ReservationPlatform() {
             >
               <p>−</p>
             </button>
-            <span id="count" className="count"><h3>{guestCount} {guestCount === 1 ? "Gast" : "Gäste"}</h3></span>
+            <span id="count" className={classes.count}><h3>{guestCount} {guestCount === 1 ? "Gast" : "Gäste"}</h3></span>
             <button
                 className={classes.buttonCreasers}
                 id="increase"

@@ -1,7 +1,7 @@
 import classes from './OpeningHoursForm.module.sass';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createOpeningHours, getAllOpeningHours } from '../../../api/requests/openingHoursApi.ts';
+import {createOpeningHours, deleteOpeningHours, getAllOpeningHours} from '../../../api/requests/openingHoursApi.ts';
 import { OpeningHoursObject } from '../../../api/models/openinghours.ts';
 
 function OpeningHoursForm() {
@@ -17,7 +17,6 @@ function OpeningHoursForm() {
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const timeRegex = /^([01]?\d|2[0-3]):([0-5]\d)$/; // Allow 0-23 hours and 00-59 minutes
-  getAllOpeningHours
   const GetAllOpeningHours = useQuery({
     queryKey: ['GetAllOpeningHours'],
     queryFn: () => getAllOpeningHours(),
@@ -31,6 +30,17 @@ function OpeningHoursForm() {
       setSuccessMessage('Änderungen erfolgreich gespeichert.');
       setTimeout(() => setSuccessMessage(null), 3000); // Hide message after 3 seconds
     },
+  });
+  const DeleteOpeningHours = useMutation<void, Error, number>({
+    mutationFn: deleteOpeningHours,
+    onSuccess: () => {
+      GetAllOpeningHours.refetch();
+      setSuccessMessage('Öffnungszeiten erfolgreich gelöscht.');
+      setTimeout(() => setSuccessMessage(null), 3000); // Hide message after 3 seconds
+    },
+    onError: (error) => {
+      console.error("Löschen fehlgeschlagen:", error);
+    }
   });
 
   const formatTime = (time: string | undefined) => {
@@ -94,9 +104,18 @@ function OpeningHoursForm() {
     return date.toTimeString().slice(0, 5);
   };
 
-  
+
   const handleOpeningHoursFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    // @ts-expect-error submitter is not part of the types
+    const submitter = event.nativeEvent.submitter as HTMLButtonElement;
+    if (submitter.id === "delete" && dayMap[weekday]) {
+      // @ts-expect-error dayMap is mapped correctly
+      DeleteOpeningHours.mutate(dayMap[weekday]?.day);
+      event.currentTarget.reset();
+      setWeekday(days[0]);
+      return;
+    }
     const newOpeningHours: OpeningHoursObject = {
       day: weekday,
       openingTime: subtractOneHour(formValues.openingTime),
@@ -104,6 +123,7 @@ function OpeningHoursForm() {
       breakEndTime: formValues.breakEndTime ? subtractOneHour(formValues.breakEndTime) : undefined,
       closingTime: subtractOneHour(formValues.closingTime)
     };
+
     if (!timeRegex.test(newOpeningHours.openingTime) || !timeRegex.test(newOpeningHours.closingTime)) {
       alert('Please enter a valid opening and closing time in HH:mm format.');
       return;
@@ -116,6 +136,7 @@ function OpeningHoursForm() {
       alert('Please enter valid break times in HH:mm format.');
       return;
     }
+
     CreateOpeningHours.mutate(newOpeningHours);
     event.currentTarget.reset();
     setWeekday(days[0]);
@@ -188,8 +209,12 @@ function OpeningHoursForm() {
                             onChange={handleInputChange}
                             required
                         />
-                        <button className={classes.submitButton} type="submit"><h3>Erstellen</h3></button>
+                        { dayMap[weekday] != undefined && (
+                            <button className={classes.submitButton} type="submit" id={"delete"}><h3>Löschen</h3></button>
+                        )}
+                        <button className={classes.submitButton} type="submit" id={"create"}><h3>{dayMap[weekday] != undefined ? "Aktualisieren" : "Erstellen"}</h3></button>
                       </form>
+                      
                     </>
 
                 )}
