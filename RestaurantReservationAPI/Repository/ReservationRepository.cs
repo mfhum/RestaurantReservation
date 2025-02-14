@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantReservationAPI.Data;
+using RestaurantReservationAPI.Helpers.Mail;
 using RestaurantReservationAPI.Interface;
 using RestaurantReservationAPI.Models;
 
 namespace RestaurantReservationAPI.Repository;
 
-public class ReservationRepository(DataContext context) : BaseRepository<Reservation>(context), IReservationRepository
+public class ReservationRepository(DataContext context, IEmailService emailService) : BaseRepository<Reservation>(context), IReservationRepository
 {
     private DataContext Context { get; } = context;
 
@@ -60,6 +61,17 @@ public class ReservationRepository(DataContext context) : BaseRepository<Reserva
 
         await Context.Reservations.AddAsync(newReservation);
         await Context.SaveChangesAsync();
+
+        // Send email confirmation
+        if (!string.IsNullOrEmpty(newReservation.Mail))
+        {
+            var reservationDetails = $"Date: {newReservation.ReservationDate:dd MMM yyyy}\n" +
+                                     $"Time: {newReservation.ReservationDate:HH:mm}\n" +
+                                     $"Guests: {newReservation.Guests}";
+
+            await emailService.SendReservationConfirmationAsync(newReservation.Mail, reservationDetails);
+        }
+
         return newReservation;
     }
 

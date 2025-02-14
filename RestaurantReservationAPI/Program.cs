@@ -6,6 +6,7 @@ using RestaurantReservationAPI.Interface;
 using RestaurantReservationAPI.Middleware;
 using RestaurantReservationAPI.Repository;
 using System.Text.Json.Serialization;
+using RestaurantReservationAPI.Helpers.Mail;
 
 var builder = WebApplication.CreateBuilder(args);
 var isProduction = builder.Environment.IsProduction();
@@ -68,6 +69,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
+builder.Services.AddSingleton<IEmailService, EmailService>();
 
 // ✅ Register repositories
 builder.Services.AddScoped<ITableRepository, TableRepository>();

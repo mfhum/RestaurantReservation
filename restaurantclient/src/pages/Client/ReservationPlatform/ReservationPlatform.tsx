@@ -13,7 +13,9 @@ function ReservationPlatform() {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [isMonthChanging, setIsMonthChanging] = useState(false); // Add state to track month change
+  const [email, setEmail] = useState<string>(''); // Add state for email
   const queryClient = useQueryClient();
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   const GetAvailabilityForMonthQuery = useQuery({
     queryKey: ['GetAllOpeningHours', reservationTime, guestCount],
@@ -61,18 +63,20 @@ function ReservationPlatform() {
   }
 
   function handleReservation() {
+    
     const newReservation: ReservationObject = {
       guests: guestCount,
       reservationDate: selectedTime,
+      mail: email,
     }
-
     CreateReservation.mutate(newReservation);
     alert('Reservation Submitted');
     setGuestCount(2);
     setReservationTime(new Date().toISOString());
     setSelectedDate('');
     setSelectedTime('');
-  };
+    setEmail('');
+  }
 
   function handleMonthChange(newMonth: string) {
     setIsMonthChanging(true); // Set month changing state to true
@@ -118,10 +122,30 @@ function ReservationPlatform() {
                 onSelectTime={(newSelectedTime) => handleTimeSelect(newSelectedTime)}
             />
         )}
-        { selectedDate && selectedTime && (
+        {selectedDate && selectedTime && (
             <>
-              <h2>Deine Reservation am {new Date(selectedTime).toLocaleDateString('de-DE', { day: 'numeric', month: 'long' })} um {new Date(selectedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })} für {guestCount} {guestCount === 1 ? "Gast" : "Gäste"}</h2>
-              <button className={classes.button} onClick={() => handleReservation()}><p>Reservation abschicken</p></button>
+              <h2>
+                Deine Reservation am {new Date(selectedTime).toLocaleDateString('de-DE', { day: 'numeric', month: 'long' })}
+                um {new Date(selectedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                für {guestCount} {guestCount === 1 ? "Gast" : "Gäste"}
+              </h2>
+
+              {/* Email Input */}
+              <label htmlFor="email"><p>Deine E-Mail-Adresse</p></label>
+              <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="E-Mail eingeben"
+                  required
+              />
+
+              {/* Disable the button if email is empty */}
+              <button className={classes.button} onClick={handleReservation} disabled={!emailRegex.test(email.trim())}>
+                <p>Reservation abschicken</p>
+              </button>
             </>
         )}
       </section>
