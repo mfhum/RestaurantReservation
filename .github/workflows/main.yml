@@ -1,0 +1,41 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - prototype  # You can change this to the branch you want to deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install SSH client
+      run: sudo apt-get install -y openssh-client
+
+    - name: Add SSH key
+      uses: webfactory/ssh-agent@v0.5.4
+      with:
+        ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+
+    - name: Deploy to VPS
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP_ADDRESS }} << 'EOF'
+          cd mariusli/RestaurantReservation
+          echo "pulling changes"
+          git pull
+          cd restaurantclient/
+          echo "running npm install and npm run build"
+          npm install
+          npm run build
+          cd ..
+          cd RestaurantReservationAPI
+          dotnet publish -c Release -o ./publish
+          cd ../../..
+          echo "restarting server..."
+          pm2 restart ecosystem.config.js
+          echo "restart finished"
+        EOF
