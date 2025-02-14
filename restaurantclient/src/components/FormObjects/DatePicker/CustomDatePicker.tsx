@@ -97,13 +97,13 @@ function CustomDatePicker({
         <h2 className={classes.calendarTitle}>Wähle einen Tag aus</h2>
         <div className={classes.calendarHeader}>
           <button onClick={handlePrevMonth} className={classes.navButton} disabled={new Date().getMonth() == currentMonth}>
-            <p className={classes.monthSelector}>&larr; Vorheriger Monat</p>
+            <p className={classes.monthSelector}>Vorheriger Monat <br/>&larr; </p>
           </button>
           <span className={classes.currentMonth}>
             <p>{months[currentMonth]} {currentYear}</p>
           </span>
           <button onClick={handleNextMonth} className={classes.navButton} disabled={new Date().getMonth() + 3 == currentMonth}>
-            <p className={classes.monthSelector}>Nächster Monat  &rarr;</p>
+            <p className={classes.monthSelector}>Nächster Monat <br/>&rarr;</p>
           </button>
         </div>
         <div className={classes.calendarGrid}>
