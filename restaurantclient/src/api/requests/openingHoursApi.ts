@@ -33,4 +33,16 @@ export const createOpeningHours = async (
   }
 };
 
+export const deleteOpeningHours = async (weekday: number): Promise<void> => {
+  try {
+    await axios.delete(`${BASE_URL}/DeleteByDay`, {
+      params: { weekday } // Send number directly as a query parameter
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("An unknown error occurred");
+  }
+};
 

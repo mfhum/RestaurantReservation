@@ -68,6 +68,7 @@ namespace RestaurantReservationAPI.Helpers
             CreateMap<OpeningHours, RequestDeleteOpeningHoursDto>().ReverseMap();
             CreateMap<OpeningHours, RequestGetOpeningHoursDto>().ReverseMap();
             CreateMap<OpeningHours, RequestGetAllOpeningHoursDto>().ReverseMap();
+            CreateMap<OpeningHours, RequestDeleteOpeningHoursByWeekdayDto>().ReverseMap();
 
             CreateMap<OpeningHours, ResponseOpeningHoursDto>().ReverseMap();
             CreateMap<OpeningHours, ResponseGetOpeningHoursDto>().ReverseMap();
