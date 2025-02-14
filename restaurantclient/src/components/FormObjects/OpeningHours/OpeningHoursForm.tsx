@@ -107,8 +107,10 @@ function OpeningHoursForm() {
 
   const handleOpeningHoursFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    // @ts-expect-error submitter is not part of the types
     const submitter = event.nativeEvent.submitter as HTMLButtonElement;
     if (submitter.id === "delete" && dayMap[weekday]) {
+      // @ts-expect-error dayMap is mapped correctly
       DeleteOpeningHours.mutate(dayMap[weekday]?.day);
       event.currentTarget.reset();
       setWeekday(days[0]);
