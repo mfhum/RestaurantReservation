@@ -124,3 +124,4 @@ RestaurantReservationAPI/logs/*
 restaurantclient/.env.production
 restaurantclient/.env.development
 restaurantclient/logs/*
+RestaurantReservationAPI/package-lock.json

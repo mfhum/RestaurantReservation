@@ -11,19 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 var isProduction = builder.Environment.IsProduction();
 
 // ✅ Load `.env` only in Production
-if (isProduction)
-{
-    var envFilePath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+var envFilePath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
 
-    if (File.Exists(envFilePath))
-    {
-        Env.Load(envFilePath);
-        Console.WriteLine("✅ Loaded .env file successfully.");
-    }
-    else
-    {
-        Console.WriteLine("⚠️ Warning: `.env` file not found. Ensure environment variables are set.");
-    }
+if (File.Exists(envFilePath))
+{
+    Env.Load(envFilePath);
+    Console.WriteLine("✅ Loaded .env file successfully.");
+}
+else
+{
+    Console.WriteLine("⚠️ Warning: `.env` file not found. Ensure environment variables are set.");
 }
 
 // ✅ Load configuration (appsettings.json + Environment)
