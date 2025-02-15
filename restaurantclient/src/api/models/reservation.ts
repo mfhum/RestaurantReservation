@@ -5,4 +5,5 @@ export interface ReservationObject {
   reservationId?: string;   // UUID
   tableId?: string;         // UUID
   mail: string;
+  name: string;
 }

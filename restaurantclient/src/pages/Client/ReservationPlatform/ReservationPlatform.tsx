@@ -14,6 +14,8 @@ function ReservationPlatform() {
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [isMonthChanging, setIsMonthChanging] = useState(false); // Add state to track month change
   const [email, setEmail] = useState<string>(''); // Add state for email
+  const [notes, setNotes] = useState<string>(''); // Add state for notes
+  const [name, setName] = useState<string>(''); // Add state for name
   const queryClient = useQueryClient();
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -68,6 +70,8 @@ function ReservationPlatform() {
       guests: guestCount,
       reservationDate: selectedTime,
       mail: email,
+      notes: notes,
+      name: name
     }
     CreateReservation.mutate(newReservation);
     alert('Reservation Submitted');
@@ -76,6 +80,8 @@ function ReservationPlatform() {
     setSelectedDate('');
     setSelectedTime('');
     setEmail('');
+    setNotes('');
+    setName('');
   }
 
   function handleMonthChange(newMonth: string) {
@@ -126,22 +132,49 @@ function ReservationPlatform() {
             <>
               <h2>
                 Deine Reservation am {new Date(selectedTime).toLocaleDateString('de-DE', { day: 'numeric', month: 'long' })}
-                um {new Date(selectedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                für {guestCount} {guestCount === 1 ? "Gast" : "Gäste"}
+                &nbsp;um {new Date(selectedTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                &nbsp;für {guestCount} {guestCount === 1 ? "Gast" : "Gäste"}:
               </h2>
-
-              {/* Email Input */}
-              <label htmlFor="email"><p>Deine E-Mail-Adresse</p></label>
-              <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="E-Mail eingeben"
-                  required
-              />
-
+              <div className={classes.reservationDetails}>
+                <label htmlFor="email"><p>Deinen Namen Angeben</p></label>
+                <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    min={3}
+                    max={25}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Namen eingeben*"
+                    className={classes.emailInput}
+                    required
+                />
+              </div>
+              <div className={classes.reservationDetails}>
+                <label htmlFor="email"><p>Deine E-Mail-Adresse</p></label>
+                <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="E-Mail eingeben*"
+                    className={classes.emailInput}
+                    required
+                />
+              </div>
+              <div className={classes.reservationDetails}>
+                <label htmlFor="email"><p>Notizen / Extrawünsche</p></label>
+                <input
+                    type="text"
+                    id="text"
+                    value={notes}
+                    max={100}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="Notizen angeben"
+                    className={classes.emailInput}
+                    required
+                />
+              </div>
               {/* Disable the button if email is empty */}
               <button className={classes.button} onClick={handleReservation} disabled={!emailRegex.test(email.trim())}>
                 <p>Reservation abschicken</p>

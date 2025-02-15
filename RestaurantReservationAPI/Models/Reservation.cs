@@ -12,4 +12,6 @@ public class Reservation
   public required int Guests { get; set; } // Number of guests
   public string? Notes { get; set; } = string.Empty;// Optional notes (e.g., special requests)
   public string? Mail { get; set; } = string.Empty; // Optional email address
+  public string Name { get; set; } = string.Empty; // Optional name of the person who made the reservation
+
 }

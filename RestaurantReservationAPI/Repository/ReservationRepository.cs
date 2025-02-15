@@ -66,10 +66,11 @@ public class ReservationRepository(DataContext context, IEmailService emailServi
         if (!string.IsNullOrEmpty(newReservation.Mail))
         {
             var reservationDetails = $"Date: {newReservation.ReservationDate:dd MMM yyyy}\n" +
-                                     $"Time: {newReservation.ReservationDate:HH:mm}\n" +
-                                     $"Guests: {newReservation.Guests}";
+                                         $"Time: {newReservation.ReservationDate:HH:mm}\n" +
+                                         $"Guests: {newReservation.Guests}\n" +
+                                         $"Notes: {newReservation.Notes}";
 
-            await emailService.SendReservationConfirmationAsync(newReservation.Mail, reservationDetails);
+            await emailService.SendReservationConfirmationAsync(newReservation.Mail, reservationDetails, newReservation.Name);
         }
 
         return newReservation;

@@ -1,6 +1,6 @@
 .reservationPlatform
   margin-top: 100px
-  height: calc(100dvh - 100px)
+  height: auto
   width: 100dvw
   display: flex
   align-items: center
@@ -38,11 +38,18 @@
   transition: background 0.3s ease-in-out
   width: auto
   animation: fadeIn 0.5s ease-in-out 0.3s forwards
+  margin-bottom: 50px
   &:hover
     background: #111315
   p
     color: white
-    
+
+.reservationDetails
+  width: 25dvw
+.emailInput
+    width: 100%
+    margin-top: 10px
+
 
 @media (max-width: 1000px)
   .reservationPlatform
@@ -63,3 +70,9 @@
       margin-top: 15px
       margin-left: 10px
       margin-right: 10px
+      
+  .reservationDetails
+    width: calc(100% - 25px)
+    margin-left: -12.5px
+  .emailInput
+    width: calc(100% - 25px)

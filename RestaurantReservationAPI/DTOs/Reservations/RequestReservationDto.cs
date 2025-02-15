@@ -9,6 +9,7 @@ public class RequestReservationDto
   public required int Guests { get; set; }
   public string? Notes { get; set; } = string.Empty;
   public string? Mail { get; set; } = string.Empty;
+  public string Name { get; set; } = string.Empty;
 }
 
 public class RequestRevervationIdDto : Generics.IHasId
@@ -59,5 +60,5 @@ public class RequestCreateReservationByGuestNumberDto
   public required DateTime ReservationDate { get; set; }
   public string? Notes { get; set; } = string.Empty;
   public string? Mail { get; set; } = string.Empty;
-
+  public string Name { get; set; } = string.Empty;
 }

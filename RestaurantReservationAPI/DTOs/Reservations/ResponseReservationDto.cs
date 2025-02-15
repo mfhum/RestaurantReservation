@@ -10,6 +10,7 @@ public class ResponseReservationDto
   public required int Guests { get; set; }
   public string? Notes { get; set; } = string.Empty;
   public string? Mail { get; set; } = string.Empty;
+  public string Name { get; set; } = string.Empty;
 }
 
 public class ResponseCreateReservationDto : ResponseReservationDto;

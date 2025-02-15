@@ -9,17 +9,17 @@ public class EmailService : IEmailService
 {
   private readonly SmtpSettings _smtpSettings = new();
 
-  public async Task SendReservationConfirmationAsync(string toEmail, string reservationDetails)
+  public async Task SendReservationConfirmationAsync(string toEmail, string reservationDetails, string reservationName)
   {
     var message = new MimeMessage();
-    message.From.Add(new MailboxAddress("Restaurant Reservations", _smtpSettings.Username));
+    message.From.Add(new MailboxAddress("Your Restaurant Name", _smtpSettings.Username));
     message.To.Add(new MailboxAddress("", toEmail));
-    message.Subject = "Reservation Confirmation";
+    message.Subject = "Reservationsbestätigung";
 
     message.Body = new TextPart("plain")
     {
       Text = $"""
-              Hallo,
+              Guten Tag {reservationName},
 
               Wir bestätigen Ihre Reservierung mit folgenden Details:
               {reservationDetails}
